@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="light" lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kundenanalyse | David Dubinskiy Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Work Sans', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { "inverse-surface": "#313030", "on-primary-fixed-variant": "#910034", "tertiary": "#70545e", "surface-variant": "#e5e2e1", "on-tertiary": "#ffffff", "secondary-container": "#b1ebe5", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#00201e", "surface-container-high": "#ebe7e7", "on-surface-variant": "#5c3f43", "on-error": "#ffffff", "primary-container": "#e60158", "outline-variant": "#e5bcc1", "primary": "#b80045", "error": "#ba1a1a", "on-secondary-fixed-variant": "#114f4b", "on-error-container": "#93000a", "on-primary": "#ffffff", "on-tertiary-fixed": "#2a151d", "surface-bright": "#fcf8f8", "secondary-fixed-dim": "#98d1cb", "on-tertiary-fixed-variant": "#594048", "on-primary-fixed": "#400012", "on-secondary-container": "#336c67", "inverse-primary": "#ffb2bc", "secondary-fixed": "#b4ede7", "primary-fixed-dim": "#ffb2bc", "on-secondary": "#ffffff", "surface-container-low": "#f6f3f2", "surface-container-highest": "#e5e2e1", "error-container": "#ffdad6", "tertiary-container": "#8a6d76", "surface": "#fcf8f8", "tertiary-fixed-dim": "#e1bdc8", "inverse-on-surface": "#f3f0ef", "outline": "#916e72", "tertiary-fixed": "#fed9e4", "background": "#fcf8f8", "surface-container": "#f0edec", "on-tertiary-container": "#fffbff", "on-surface": "#1c1b1b", "surface-dim": "#dcd9d9", "on-primary-container": "#fffbff", "secondary": "#2f6763", "surface-tint": "#bd0047", "primary-fixed": "#ffd9dd", "on-background": "#1c1b1b" },
+                fontFamily: { "headline": ["Work Sans"], "body": ["Work Sans"], "label": ["Work Sans"] },
+                borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+            },
+        },
+    }
+</script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed-dim">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low flex flex-col p-6 space-y-8 z-50">
+<div class="flex flex-col space-y-1">
+<span class="text-lg font-black tracking-tighter text-stone-900">Analytics Lab</span>
+<span class="text-xs uppercase tracking-widest text-on-surface-variant opacity-70">Dubinskiy Edition</span>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all group" href="index.html">
+<span class="material-symbols-outlined">dashboard</span><span class="font-medium text-base">Übersicht</span>
+</a>
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all group" href="sales_funnel.html">
+<span class="material-symbols-outlined">filter_alt</span><span class="font-medium text-base">Verkaufstrichter</span>
+</a>
+<a class="flex items-center space-x-3 text-white bg-gradient-to-br from-[#b80045] to-[#e60158] rounded-full px-4 py-2 shadow-sm scale-100 active:scale-95 transition-transform" href="kundenanalyse.html">
+<span class="material-symbols-outlined">group</span><span class="font-medium text-base">Kundenanalyse</span>
+</a>
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all group" href="#">
+<span class="material-symbols-outlined">shopping_bag</span><span class="font-medium text-base">Bestellungen</span>
+</a>
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all group" href="#">
+<span class="material-symbols-outlined">assessment</span><span class="font-medium text-base">Berichte</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-outline-variant/20 space-y-4">
+<button class="w-full py-3 bg-surface-container-highest text-on-surface font-semibold rounded-full hover:bg-white transition-colors">
+Bericht exportieren
+</button>
+<div class="space-y-2">
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">help</span><span class="text-sm">Hilfe</span>
+</a>
+<a class="flex items-center space-x-3 text-stone-600 px-4 py-2 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">logout</span><span class="text-sm">Abmelden</span>
+</a>
+</div>
+</div>
+</aside>
+<header class="w-full top-0 sticky z-40 bg-surface-bright flex justify-between items-center px-8 h-16 ml-64 max-w-[calc(100%-16rem)]">
+<div class="flex items-center space-x-4">
+<span class="text-xl font-bold text-primary">David Dubinskiy Analytics</span>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<input class="bg-surface-container-high rounded-full px-5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Insights suchen..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+</div>
+<div class="flex items-center space-x-3">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-primary-fixed border border-outline-variant/30">
+<img class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC58O8Uk54xDu6klRGRAiLXeh4AtcO1etfONECkljkXOyaP752H2ZkARoXou9NrjFbUzMVzf-bIUeVTlueoUF2-2eCLRA-xDm3YYjK2t57flwx-6HFdCcBC-a4AfRp60cdVyUb7hvj33O8t5c8AeE45ytbCzVqXmElH04d_ffhXGVvV7xNuujI4R3ou9ssXBO582MiTk--_dPksuynxIt0s5DDy_9eALma3GS4LAftQfhHFp0uqyuWFe4zY61ofx3QaRgUWTBXUvHdp"/>
+</div>
+</div>
+</div>
+</header>
+<main class="ml-64 p-8 space-y-12">
+<section class="flex flex-col space-y-2">
+<h1 class="text-5xl font-extrabold tracking-tight text-on-surface">Kundenanalyse</h1>
+<p class="text-xl text-on-surface-variant font-light">Verhalten &amp; Insights: Entdecke die Geschichten deiner Kunden.</p>
+</section>
+<section class="grid grid-cols-12 gap-6">
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between min-h-[180px]">
+<div class="flex justify-between items-start">
+<span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60">Gesamtzahl Kunden</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold">+12,4%</span>
+</div>
+<div class="mt-4">
+<div class="text-4xl font-black text-on-surface">142.832</div>
+<div class="text-sm text-on-surface-variant mt-1">Aktive Nutzer in diesem Monat</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-3 bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between">
+<span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60">Ø CLV (Customer Lifetime Value)</span>
+<div class="mt-4">
+<div class="text-4xl font-black text-primary">€84,20</div>
+<div class="text-sm text-on-surface-variant mt-1">Gesamtwert pro Nutzer</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-5 bg-gradient-to-br from-primary to-primary-container p-8 rounded-lg text-white flex items-center justify-between relative overflow-hidden shadow-xl">
+<div class="relative z-10">
+<span class="text-sm font-bold uppercase tracking-widest opacity-80">Beliebteste Zutat</span>
+<div class="text-3xl font-black mt-2 leading-tight">Gefriergetrocknete<br/>Erdbeeren</div>
+<div class="mt-4 flex items-center space-x-2">
+<span class="material-symbols-outlined">star_rate</span>
+<span class="text-sm font-medium">In 84% der individualisierten Mixe enthalten</span>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-20">
+<span class="material-symbols-outlined text-[180px]">nutrition</span>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-12 gap-8 items-start">
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<div class="bg-surface-container-low p-8 rounded-lg">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl font-bold text-on-surface">Kundensegmentierung</h2>
+<div class="flex space-x-2">
+<span class="px-4 py-1.5 bg-secondary text-white rounded-full text-xs font-bold">Monatsübersicht</span>
+<span class="px-4 py-1.5 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold">Jährlich</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 h-64">
+<div class="col-span-1 bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-end group cursor-pointer hover:bg-primary transition-colors">
+<div class="h-24 w-full bg-surface-container-high rounded-t-xl mb-4 overflow-hidden relative">
+<div class="absolute bottom-0 left-0 right-0 bg-primary h-[65%] group-hover:bg-white/30 transition-colors"></div>
+</div>
+<span class="text-sm font-bold text-on-surface group-hover:text-white transition-colors">Müsli Liebhaber</span>
+<span class="text-2xl font-black text-primary group-hover:text-white transition-colors">45%</span>
+</div>
+<div class="col-span-1 bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-end group cursor-pointer hover:bg-secondary transition-colors">
+<div class="h-24 w-full bg-surface-container-high rounded-t-xl mb-4 overflow-hidden relative">
+<div class="absolute bottom-0 left-0 right-0 bg-secondary h-[32%] group-hover:bg-white/30 transition-colors"></div>
+</div>
+<span class="text-sm font-bold text-on-surface group-hover:text-white transition-colors">Abonnenten</span>
+<span class="text-2xl font-black text-secondary group-hover:text-white transition-colors">32%</span>
+</div>
+<div class="col-span-1 bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-end group cursor-pointer hover:bg-tertiary transition-colors">
+<div class="h-24 w-full bg-surface-container-high rounded-t-xl mb-4 overflow-hidden relative">
+<div class="absolute bottom-0 left-0 right-0 bg-tertiary h-[23%] group-hover:bg-white/30 transition-colors"></div>
+</div>
+<span class="text-sm font-bold text-on-surface group-hover:text-white transition-colors">Neukunden</span>
+<span class="text-2xl font-black text-tertiary group-hover:text-white transition-colors">23%</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-lg">
+<h2 class="text-2xl font-bold text-on-surface mb-2">Kaufaktualität</h2>
+<p class="text-on-surface-variant text-sm mb-8 italic">Verteilung der letzten Einkäufe über die aktive Kundenbasis</p>
+<div class="flex items-end space-x-1 h-48 w-full">
+<div class="bg-primary/10 w-full h-[20%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/20 w-full h-[35%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/40 w-full h-[60%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/60 w-full h-[85%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/80 w-full h-[100%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/60 w-full h-[70%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/40 w-full h-[45%] rounded-t-sm hover:bg-primary transition-colors"></div>
+<div class="bg-primary/20 w-full h-[30%] rounded-t-sm hover:bg-primary transition-colors"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 border-t border-outline-variant/10 pt-4">
+<span>0-7 Tage</span>
+<span>8-14 Tage</span>
+<span>15-30 Tage</span>
+<span>31-60 Tage</span>
+<span>60+ Tage</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<div class="bg-surface-container-lowest p-8 rounded-lg flex items-center space-x-6">
+<div class="relative w-24 h-24">
+<svg class="w-24 h-24 transform -rotate-90" viewbox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f6f3f2" stroke-width="4"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#b80045" stroke-dasharray="72, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-xl font-black text-on-surface">72%</span>
+</div>
+</div>
+<div>
+<div class="text-sm font-bold text-on-surface-variant/60 uppercase tracking-widest">Wiederkehrend</div>
+<div class="text-xs text-on-surface-variant">Kundenverhältnis</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-lg">
+<h3 class="text-lg font-bold text-on-surface mb-6">Live Insights Feed</h3>
+<div class="space-y-6 max-h-[400px] overflow-y-auto pr-2 hide-scrollbar">
+<div class="flex space-x-4">
+<div class="h-10 w-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">refresh</span>
+</div>
+<div>
+<p class="text-sm leading-tight text-on-surface"><span class="font-bold">Sarah M.</span> hat ihr "Berry Blast"-Abo erneuert.</p>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter">Gerade eben</span>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="h-10 w-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div>
+<p class="text-sm leading-tight text-on-surface"><span class="font-bold">Leon K.</span> hat einen neuen Custom Mix gespeichert.</p>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter">Vor 12 Minuten</span>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="h-10 w-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+</div>
+<div>
+<p class="text-sm leading-tight text-on-surface"><span class="font-bold">Emma W.</span> hat ihre erste Bestellung (Classic Oats) aufgegeben.</p>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter">Vor 45 Minuten</span>
+</div>
+</div>
+<div class="flex space-x-4">
+<div class="h-10 w-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="text-sm leading-tight text-on-surface"><span class="font-bold">Marc P.</span> hat das 'Müsli Meister'-Treue-Level erreicht.</p>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter">Vor 1 Stunde</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-lg font-bold text-on-surface">Personas</h3>
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center space-x-4 border border-outline-variant/10">
+<img class="h-12 w-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaX0dH_A9HQH2HPtlE6kATNWtrFUVvQV0Mw_K3Es_Q7pkSmvn0BRJclffTZgX9HyuaKcxTkDClWN6rEy2p2zMKuOsMzmO3pfu3JUnBkqAEMb6-Wk8fC3YVvjQ9ppnGcR0gTepmbZz7ne-e5egCuuF-Yv5G7tXUWwng0L206XWz_7Vr3uClqjpFDOIJepQ-QgyH7H0gWCwL43hx8r5hX6Wjgs37oIZVGm6e0ZyD-v9SWg2rqLD3-SQnzxvj96CeTwmKjlzhYm5Wtz7h"/>
+<div>
+<div class="text-sm font-bold text-on-surface">Der Gesundheitsguru</div>
+<div class="text-xs text-on-surface-variant">Ø Bestellwert: €45,00 • Hohe Loyalität</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center space-x-4 border border-outline-variant/10">
+<img class="h-12 w-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa_ByiWONF93XkIC9uiMZb4B38sCTRSWRONAmfKKhgZA7wJJwF2n8DYNIDwYROuVf-_sdwdb9edlqoMfcg2nRy5mL_jhcMHJGOoGVz3qN3fO66KeOVrz_M23VqW8pVK4qTZ85DmwsTCkamKRLXMFmC-zFvB9tvx241ILRe6a5s9ePTuePMuGknCcp1gEHjpg2vivab-0EAz8Kf05tSwh8Wfuwcrn9MdLCBBqDVwfw7xrNwobHbgnl8WaKIm_q8Yq_Cdz7svrbgivgc"/>
+<div>
+<div class="text-sm font-bold text-on-surface">Der Business Professional</div>
+<div class="text-xs text-on-surface-variant">Ø Bestellwert: €28,00 • Abo-Fokus</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="mt-16 pt-12 pb-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center opacity-60">
+<div class="flex items-center space-x-8 mb-6 md:mb-0">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Schnittstellen:</span>
+<div class="flex space-x-6 grayscale brightness-50 contrast-125">
+<span class="font-black italic text-lg tracking-tighter">Shopify</span>
+<span class="font-black italic text-lg tracking-tighter uppercase">Klaviyo</span>
+<span class="font-black italic text-lg tracking-tighter">Google Analytics</span>
+</div>
+</div>
+<div class="text-xs font-medium text-on-surface-variant flex gap-4">
+<span>© <script>document.write(new Date().getFullYear())</script> David Dubinskiy</span>
+<a href="https://dubinskiy.de" target="_blank" class="hover:text-primary transition-colors">dubinskiy.de</a>
+<a href="https://www.linkedin.com/in/dubinskiy/" target="_blank" class="hover:text-primary transition-colors">LinkedIn</a>
+</div>
+</footer>
+</main>
+<button class="fixed bottom-8 right-8 bg-primary text-white h-14 w-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined">add_chart</span>
+</button>
+</body>
+</html>
