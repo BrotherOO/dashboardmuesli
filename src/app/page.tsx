@@ -15,10 +15,10 @@ export default function Dashboard() {
 
   const isBelowTarget = currentRevenue < targetRevenue;
 
-  let chartData: any[] = [];
+  let chartData: Array<{name: string, value: number}> = [];
   if (csvData.length > 0) {
-    chartData = csvData.filter(r => r.Datum || r.Date).map((r: any) => ({
-      name: r.Datum || r.Date || "N/A",
+    chartData = csvData.filter((r: Record<string, unknown>) => r.Datum || r.Date).map((r: Record<string, unknown>) => ({
+      name: String(r.Datum || r.Date || "N/A"),
       value: Number(r.Umsatz || r.Revenue || r.revenue || 0)
     }));
   } else {

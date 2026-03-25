@@ -15,7 +15,7 @@ export function DropzoneUploader() {
         header: true,
         dynamicTyping: true,
         complete: (results) => {
-          setCsvData(results.data);
+          setCsvData(results.data as Record<string, unknown>[]);
         },
       });
     }
