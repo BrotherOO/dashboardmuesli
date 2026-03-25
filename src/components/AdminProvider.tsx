@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { mockData } from "@/data";
 
 interface AdminContextProps {
   isAdmin: boolean;
@@ -8,6 +9,13 @@ interface AdminContextProps {
   setEditMode: (mode: boolean) => void;
   login: (pw: string) => boolean;
   logout: () => void;
+  
+  targetRevenue: number;
+  setTargetRevenue: (val: number) => void;
+  csvData: any[];
+  setCsvData: (data: any[]) => void;
+  
+  currentRevenue: number;
 }
 
 const AdminContext = createContext<AdminContextProps | undefined>(undefined);
@@ -15,6 +23,9 @@ const AdminContext = createContext<AdminContextProps | undefined>(undefined);
 export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [targetRevenue, setTargetRevenue] = useState(150000);
+  const [csvData, setCsvData] = useState<any[]>([]);
+  
   const router = useRouter();
   const pathname = usePathname();
 
@@ -28,7 +39,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   }, [router, pathname]);
 
   const login = (pw: string) => {
-    // Basic password challenge: admin/admin logic requested
     if (pw === "admin" || pw === "admin/admin") {
       setIsAdmin(true);
       localStorage.setItem("isAdmin", "true");
@@ -44,8 +54,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     router.push("/login");
   };
 
+  // Compute Revenue based on CSV data or mock
+  const currentRevenue = csvData.length > 0 
+    ? csvData.reduce((acc, row) => acc + (Number(row.Umsatz || row.Revenue || row.revenue || 0)), 0)
+    : mockData.overview.revenue;
+
   return (
-    <AdminContext.Provider value={{ isAdmin, editMode, setEditMode, login, logout }}>
+    <AdminContext.Provider value={{ isAdmin, editMode, setEditMode, login, logout, targetRevenue, setTargetRevenue, csvData, setCsvData, currentRevenue }}>
       {children}
     </AdminContext.Provider>
   );

@@ -3,37 +3,37 @@ import React from "react";
 import { useAdmin } from "@/components/AdminProvider";
 import { LayoutDashboard, Filter, Users, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { editMode, setEditMode, logout } = useAdmin();
+  const pathname = usePathname();
+
+  const navItemClass = (href: string) => `flex items-center gap-4 px-5 py-3.5 rounded-2xl font-bold transition-all cursor-pointer ${pathname === href ? 'bg-background shadow-neu-pressed text-primary' : 'hover:shadow-neu-flat text-muted-foreground'}`;
 
   return (
     <div className="flex min-h-screen bg-background text-foreground font-body">
       <aside className="w-64 fixed left-0 top-0 h-screen bg-background border-r border-white/40 p-6 flex flex-col shadow-neu-flat z-40">
         <div className="mb-12">
           <h2 className="text-2xl font-black text-foreground">Analytics Lab</h2>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary mt-1">Dubinskiy Edition</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary mt-1">David Dubinskiy BI</p>
         </div>
         <nav className="flex-1 space-y-4">
-          <div className="flex items-center gap-4 px-5 py-3.5 bg-background shadow-neu-pressed rounded-2xl text-primary font-bold transition-all">
+          <Link href="/" className={navItemClass("/")}>
             <LayoutDashboard size={20} />
-            Übersicht
-          </div>
-          <div className="flex items-center gap-4 px-5 py-3.5 hover:shadow-neu-flat rounded-2xl cursor-pointer text-muted-foreground transition-all">
+            BI Übersicht
+          </Link>
+          <Link href="/funnel" className={navItemClass("/funnel")}>
             <Filter size={20} />
-            Verkaufstrichter
-          </div>
-          <div className="flex items-center gap-4 px-5 py-3.5 hover:shadow-neu-flat rounded-2xl cursor-pointer text-muted-foreground transition-all">
+            Sales Funnel
+          </Link>
+          <Link href="/customers" className={navItemClass("/customers")}>
             <Users size={20} />
-            Kundenanalyse
-          </div>
+            Customer Insights
+          </Link>
         </nav>
         <div className="mt-auto space-y-6">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex gap-3 grayscale opacity-50 px-2">
-            <span>Shopify</span>
-            <span>GA4</span>
-            <span>Klaviyo</span>
-          </div>
           <Button variant="ghost" className="w-full justify-start gap-4 px-5 text-muted-foreground shadow-neu-flat hover:shadow-neu-pressed" onClick={logout}>
             <LogOut size={18} />
             Abmelden
@@ -43,10 +43,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1 ml-64 p-10 min-h-screen bg-background">
         <header className="flex justify-between items-center mb-12 pb-6 border-b border-black/5">
-          <div>
-            <h1 className="text-4xl font-black">Dashboard</h1>
-            <p className="text-muted-foreground text-sm mt-2 font-medium">Live Übersicht & Merchandising Insights.</p>
-          </div>
+          <div />
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-4">
               <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${editMode ? 'text-primary' : 'text-muted-foreground'}`}>

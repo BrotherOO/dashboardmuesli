@@ -1,210 +1,113 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAdmin } from "@/components/AdminProvider";
 import { DashboardLayout } from "@/components/DashboardLayout";
+import { DropzoneUploader } from "@/components/DropzoneUploader";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { mockData, performanceData } from "@/data";
-import { motion, useSpring, useTransform } from "framer-motion";
-import { TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, XAxis, Tooltip, CartesianGrid } from 'recharts';
-
-function Counter({ value }: { value: number }) {
-  const spring = useSpring(0, { bounce: 0, duration: 1500 });
-  const display = useTransform(spring, (current) => 
-    Math.round(current).toLocaleString("de-DE")
-  );
-
-  useEffect(() => {
-    spring.set(value);
-  }, [spring, value]);
-
-  return <motion.span>{display}</motion.span>;
-}
+import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
+import { AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function Dashboard() {
-  const { isAdmin, editMode } = useAdmin();
-  const [funnelThreshold, setFunnelThreshold] = useState(15);
-  const [currentCampaign, setCurrentCampaign] = useState("Vibrant Harvest Kampagne");
+  const { isAdmin, editMode, targetRevenue, setTargetRevenue, currentRevenue, csvData } = useAdmin();
 
   if (!isAdmin) return null;
 
-  const funnelCR = (mockData.funnel.purchased / mockData.funnel.totalVisitors) * 100;
-  const showFunnelWarning = funnelCR < funnelThreshold;
+  const isBelowTarget = currentRevenue < targetRevenue;
+
+  let chartData: any[] = [];
+  if (csvData.length > 0) {
+    chartData = csvData.filter(r => r.Datum || r.Date).map((r: any) => ({
+      name: r.Datum || r.Date || "N/A",
+      value: Number(r.Umsatz || r.Revenue || r.revenue || 0)
+    }));
+  } else {
+    chartData = [
+      { name: '01. Okt', value: 4000 },
+      { name: '05. Okt', value: 3000 },
+      { name: '10. Okt', value: 12000 },
+      { name: '15. Okt', value: 2780 },
+      { name: '20. Okt', value: 1890 },
+      { name: '25. Okt', value: 2390 },
+      { name: '30. Okt', value: 3490 },
+    ];
+  }
 
   return (
     <DashboardLayout>
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 pb-16">
-        {/* Column 1: Overview */}
-        <div className="space-y-8">
-          <h2 className="text-xl font-bold mb-4 opacity-80">Shopify Overview</h2>
-          <Card className="p-8 group relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Umsatz</p>
-            <div className="mt-4 flex items-end gap-3">
-              <span className="text-4xl font-black text-foreground">€<Counter value={mockData.overview.revenue} /></span>
-              <span className="text-sm font-bold text-secondary flex items-center bg-secondary/10 px-2 py-0.5 rounded-full"><TrendingUp size={16} className="mr-1"/>+{mockData.overview.revenueTrend}%</span>
-            </div>
-          </Card>
-          <Card className="p-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Conv. Rate (GA4)</p>
-            <div className="mt-4 flex items-end gap-3">
-              <span className="text-4xl font-black text-foreground"><Counter value={mockData.overview.conversionRate} />%</span>
-              <span className="text-sm font-bold text-primary flex items-center bg-primary/10 px-2 py-0.5 rounded-full"><TrendingDown size={16} className="mr-1"/>{mockData.overview.conversionTrend}%</span>
-            </div>
-          </Card>
-          <Card className="p-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Ø Bestellwert (AOV)</p>
-            <div className="mt-4 flex items-end gap-3">
-              <span className="text-4xl font-black text-foreground">€<Counter value={mockData.overview.aov} /></span>
-              <span className="text-sm font-bold text-secondary flex items-center bg-secondary/10 px-2 py-0.5 rounded-full"><TrendingUp size={16} className="mr-1"/>+{mockData.overview.aovTrend}%</span>
-            </div>
-          </Card>
-          <Card className="p-8 h-80 flex flex-col pt-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-4">Performance Timeline</p>
-            <div className="flex-1 w-full min-h-0">
-               <ResponsiveContainer width="100%" height="100%">
-                 <LineChart data={performanceData}>
-                   <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} vertical={false}/>
-                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 10}} dy={10} />
-                   <Tooltip 
-                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '9px 9px 16px rgba(163,177,198,0.6)', backgroundColor: '#fff' }}
-                   />
-                   <Line type="monotone" dataKey="revenue" stroke="#C80050" strokeWidth={3} dot={{r:4}} activeDot={{r:6}} />
-                 </LineChart>
-               </ResponsiveContainer>
-            </div>
-          </Card>
-        </div>
+      <div className="flex justify-between items-end mb-8">
+         <div>
+            <h2 className="text-2xl font-black text-foreground">Self-Service BI</h2>
+            <p className="text-muted-foreground text-sm font-medium">CSV Upload Parsing in Echtzeit.</p>
+         </div>
+      </div>
 
-        {/* Column 2: Funnel */}
-        <div className="space-y-8">
-          <div className="flex justify-between items-center mb-4 min-h-[40px]">
-            <h2 className="text-xl font-bold opacity-80">Mixer Funnel (GA4)</h2>
-            {editMode && (
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] uppercase font-bold text-muted-foreground">Warnschwelle (%)</span>
-                <Input 
-                  type="number" 
-                  className="w-20 h-8 text-xs font-bold" 
-                  value={funnelThreshold} 
-                  onChange={e => setFunnelThreshold(Number(e.target.value))} 
-                />
-              </div>
-            )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
+        <DropzoneUploader />
+        <Card className={`p-8 flex flex-col justify-center transition-all ${isBelowTarget ? 'border-primary/50 shadow-[inset_0_0_20px_rgba(200,0,80,0.1)] bg-primary/5' : ''}`}>
+          <div className="flex justify-between items-start mb-4">
+             <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Admin KPI: Ziel-Umsatz</span>
+             {isBelowTarget ? (
+                 <span className="flex items-center gap-1.5 text-primary text-xs font-bold px-3 py-1 bg-primary/10 rounded-full"><AlertTriangle size={14}/> Warnung: Ziel verfehlt</span>
+             ) : (
+                 <span className="flex items-center gap-1.5 text-secondary text-xs font-bold px-3 py-1 bg-secondary/10 rounded-full"><CheckCircle size={14}/> Ziel erreicht</span>
+             )}
           </div>
-          <Card className={`p-8 transition-colors duration-500 overflow-hidden ${showFunnelWarning ? 'border-primary shadow-[inset_0_0_20px_rgba(200,0,80,0.15)] bg-primary/5' : ''}`}>
-            {showFunnelWarning && (
-              <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex items-center gap-3 text-white font-bold text-sm mb-10 bg-primary p-4 rounded-xl shadow-neu-pressed">
-                <AlertCircle size={20} />
-                Action Needed: Conversion unter {funnelThreshold}%!
-              </motion.div>
-            )}
-            <div className="space-y-10 relative">
-              <div className="absolute left-4 top-4 bottom-4 w-1 bg-black/5 rounded-full" />
-              <div className="relative pl-12 group">
-                <div className="absolute left-2.5 top-2 w-4 h-4 rounded-full bg-black/20 -translate-x-1/2 transition-transform group-hover:scale-150" />
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Visit Mixer</p>
-                <div className="flex items-end justify-between mt-1">
-                    <p className="text-2xl font-black text-foreground">{mockData.funnel.totalVisitors.toLocaleString('de')}</p>
-                    <p className="text-xs font-black opacity-40">100%</p>
-                </div>
-              </div>
-              <div className="relative pl-12 group">
-                <div className="absolute left-2.5 top-2 w-4 h-4 rounded-full bg-black/20 -translate-x-1/2 transition-transform group-hover:scale-150" />
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Start Customizing</p>
-                <div className="flex items-end justify-between mt-1">
-                    <p className="text-2xl font-black text-foreground">{mockData.funnel.startedMixing.toLocaleString('de')}</p>
-                    <p className="text-xs font-bold text-primary">-31.3%</p>
-                </div>
-              </div>
-              <div className="relative pl-12 group">
-                <div className="absolute left-2.5 top-2 w-4 h-4 rounded-full bg-black/20 -translate-x-1/2 transition-transform group-hover:scale-150" />
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Add to Cart</p>
-                <div className="flex items-end justify-between mt-1">
-                    <p className="text-2xl font-black text-foreground">{mockData.funnel.addedToCart.toLocaleString('de')}</p>
-                    <p className="text-xs font-bold text-primary">-75.3%</p>
-                </div>
-              </div>
-              <div className="relative pl-12 group">
-                <div className="absolute left-2.5 top-2 w-4 h-4 rounded-full bg-black/20 -translate-x-1/2 transition-transform group-hover:scale-150" />
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Checkout Started</p>
-                 <div className="flex items-end justify-between mt-1">
-                    <p className="text-2xl font-black text-foreground">{mockData.funnel.checkoutStarted.toLocaleString('de')}</p>
-                </div>
-              </div>
-              <div className="relative pl-12 group">
-                <div className="absolute left-2.5 top-2 w-5 h-5 rounded-full bg-primary -translate-x-1/2 shadow-[0_0_15px_rgba(200,0,80,0.6)] animate-pulse" />
-                <p className="text-xs font-bold uppercase tracking-widest text-primary">Purchased</p>
-                <div className="flex items-end justify-between mt-1">
-                    <p className="text-3xl font-black text-primary">{mockData.funnel.purchased.toLocaleString('de')}</p>
-                    <p className="text-sm font-black text-primary">Final CR: {funnelCR.toFixed(1)}%</p>
-                </div>
-              </div>
+          <div className="flex items-end gap-6 min-h-[60px]">
+            <div className="text-5xl font-black text-foreground">
+              €{currentRevenue.toLocaleString('de')}
             </div>
-            {showFunnelWarning && (
-                <button className="w-full mt-10 py-3 rounded-2xl bg-background border border-primary/40 text-primary font-bold shadow-neu-flat hover:shadow-neu-pressed transition-all active:scale-95">
-                    A/B-Test Simulator starten
-                </button>
-            )}
-          </Card>
-        </div>
-
-        {/* Column 3: Customers */}
-        <div className="space-y-8">
-          <h2 className="text-xl font-bold mb-4 opacity-80">Customer Insights (Klaviyo)</h2>
-          <Card className="p-8">
-             <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Kundenbindung</p>
-             <div className="flex items-center gap-8">
-                <div className="w-28 h-28 rounded-full shadow-neu-pressed flex items-center justify-center border-[10px] border-primary/20 relative isolate">
-                  <div className="absolute inset-0 rounded-full border-[10px] border-primary border-l-transparent border-b-transparent transform rotate-45 -z-10" />
-                  <span className="text-2xl font-black text-foreground">{mockData.customers.retentionRate}%</span>
-                </div>
-                <div>
-                  <p className="font-black text-lg text-foreground">Stammkunden</p>
-                  <p className="text-sm text-muted-foreground mt-2 font-medium">Kaufen regelmäßig nach.<br/>Kohorte: Q3 / 24</p>
-                </div>
-             </div>
-          </Card>
-          <Card className="p-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-4">Aktuelle Kampagne</p>
-            {editMode ? (
+            <div className="pb-1 text-sm font-bold text-muted-foreground opacity-60">
+              / €{targetRevenue.toLocaleString('de')} Target
+            </div>
+          </div>
+          {editMode && (
+            <div className="mt-6 flex items-center gap-4 bg-background p-4 rounded-xl shadow-neu-pressed">
+              <span className="text-xs uppercase font-bold text-primary">Target (Edit Mode):</span>
               <Input 
-                value={currentCampaign} 
-                onChange={(e) => setCurrentCampaign(e.target.value)}
-                className="font-bold text-xl h-14"
+                type="number" 
+                value={targetRevenue} 
+                onChange={e => setTargetRevenue(Number(e.target.value))}
+                className="w-40 font-bold"
               />
-            ) : (
-              <h3 className="text-3xl font-black text-primary leading-tight">{currentCampaign}</h3>
-            )}
-            <div className="mt-6 flex items-center justify-between">
-                <p className="text-sm font-bold text-secondary flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse" />
-                Live-Auswertung
-                </p>
-                <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-background shadow-neu-pressed rounded-full">ROAS: 4.1</span>
             </div>
-          </Card>
-          <Card className="p-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Top Insights</p>
-            <div className="space-y-6">
-               <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-full shadow-neu-pressed flex items-center justify-center text-primary text-sm font-black bg-background border border-white/50">1</div>
-                  <div>
-                    <p className="text-sm font-black text-foreground">Beliebteste Zutat</p>
-                    <p className="text-xs font-bold text-muted-foreground mt-1">{mockData.customers.topIngredient}</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-full shadow-neu-pressed flex items-center justify-center text-primary text-sm font-black bg-background border border-white/50">2</div>
-                  <div>
-                    <p className="text-sm font-black text-foreground">Ø Lebenszeitwert</p>
-                    <p className="text-xs font-bold text-muted-foreground mt-1">€{mockData.customers.clv.toFixed(2)} (Top 10%)</p>
-                  </div>
-               </div>
-            </div>
-          </Card>
-        </div>
+          )}
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 pb-16">
+        <Card className="p-8 h-[400px] flex flex-col">
+          <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Umsatz Verlauf (Dynamisch Area)</p>
+          <div className="flex-1 w-full min-h-0">
+             <ResponsiveContainer width="100%" height="100%">
+               <AreaChart data={chartData}>
+                 <defs>
+                   <linearGradient id="colorUmsatz" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="5%" stopColor="#C80050" stopOpacity={0.8}/>
+                     <stop offset="95%" stopColor="#C80050" stopOpacity={0}/>
+                   </linearGradient>
+                 </defs>
+                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.05} vertical={false}/>
+                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10}} dy={10} />
+                 <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '9px 9px 16px rgba(163,177,198,0.6)', backgroundColor: '#fff' }} />
+                 <Area type="monotone" dataKey="value" stroke="#C80050" strokeWidth={3} fillOpacity={1} fill="url(#colorUmsatz)" />
+               </AreaChart>
+             </ResponsiveContainer>
+          </div>
+        </Card>
+        <Card className="p-8 h-[400px] flex flex-col">
+          <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Umsatz Segmentierung (Dynamisch Bar)</p>
+          <div className="flex-1 w-full min-h-0">
+             <ResponsiveContainer width="100%" height="100%">
+               <BarChart data={chartData}>
+                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.05} vertical={false}/>
+                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10}} dy={10} />
+                 <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '9px 9px 16px rgba(163,177,198,0.6)', backgroundColor: '#fff' }} cursor={{fill: 'rgba(0,0,0,0.02)'}} />
+                 <Bar dataKey="value" fill="#0f766e" radius={[6, 6, 0, 0]} />
+               </BarChart>
+             </ResponsiveContainer>
+          </div>
+        </Card>
       </div>
     </DashboardLayout>
   );
