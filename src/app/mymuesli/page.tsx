@@ -201,16 +201,7 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
             <button className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-800 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#f91f64]">
                📅 Zeitraum: Letzte 7 Tage <ChevronRight size={14} className="rotate-90 opacity-50"/>
             </button>
-            <AnimatePresence>
-              {editorMode && (
-                <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="absolute top-14 right-0 w-[320px] bg-[#fff9e6] border-l-4 border-[#ffd000] p-4 rounded-xl shadow-xl z-50">
-                  <p className="text-xs text-slate-800 font-bold italic flex items-start gap-2 leading-relaxed">
-                    <Lightbulb size={16} className="shrink-0 mt-0.5 text-[#C80050]"/> 
-                    {"\"Wie Sie sehen, habe ich das Dashboard standardmäßig auf die 'Letzten 7 Tage' im Vergleich zur 'Vorwoche' eingestellt. Ein Vergleich von gestern zu heute macht durch die natürlichen Schwankungen im E-Commerce keinen Sinn. Im operativen Merchandising schaue ich mir die Wochentrends an. Wenn wir allerdings in Aufgabe 2 über den Saisonwechsel sprechen, würde ich diesen Filter auf 'Year-over-Year' (Vorjahr) stellen, um die Saisonalität sauber abzubilden.\""}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+
           </div>
         </div>
 
@@ -273,7 +264,7 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
              {editorMode && (
                <>
                  <motion.div initial={{opacity:0, backdropFilter:"blur(0px)"}} animate={{opacity:1, backdropFilter:"blur(4px)"}} exit={{opacity:0, backdropFilter:"blur(0px)"}} className="absolute inset-0 z-10 p-6 rounded-3xl flex flex-col justify-center items-center bg-white/40">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-6xl">
                       {/* Overlay 1: Traffic/Revenue */}
                       <motion.div initial={{y:20}} animate={{y:0}} className="bg-[#12504c]/95 text-white p-6 rounded-2xl shadow-2xl border border-[#12504c] backdrop-blur-md">
                         <div className="text-xs font-black uppercase tracking-widest text-[#f4b8c8] mb-2 flex items-center gap-2"><Lightbulb size={16}/> Umsatz &amp; Sitzungen</div>
@@ -288,6 +279,13 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
                         <p className="text-sm font-medium leading-relaxed">
                           <strong>Messmethode:</strong> Shopify / Klaviyo Kohorten-Analyse.<br/>
                           <strong>Wichtig:</strong> &quot;Die Loyalität senkt die Customer Acquisition Costs (CAC).&quot;
+                        </p>
+                      </motion.div>
+                      {/* Overlay 3: Zeitraum Strategie (Moved to fix overlap) */}
+                      <motion.div initial={{y:20}} animate={{y:0}} transition={{delay:0.2}} className="bg-[#fff9e6]/95 text-slate-800 p-6 rounded-2xl shadow-2xl border border-[#ffd000] backdrop-blur-md">
+                        <div className="text-xs font-black uppercase tracking-widest text-[#C80050] mb-2 flex items-center gap-2"><Lightbulb size={16}/> Zeitraum-Strategie</div>
+                        <p className="text-[11px] font-bold italic leading-relaxed">
+                          &quot;Wie Sie sehen, habe ich das Dashboard standardmäßig auf die &apos;Letzten 7 Tage&apos; im Vergleich zur &apos;Vorwoche&apos; eingestellt. Ein Vergleich von gestern zu heute macht durch die natürlichen Schwankungen im E-Commerce keinen Sinn. Im operativen Merchandising schaue ich mir die Wochentrends an. Wenn wir allerdings in Aufgabe 2 über den Saisonwechsel sprechen, würde ich diesen Filter auf &apos;Year-over-Year&apos; (Vorjahr) stellen, um die Saisonalität sauber abzubilden.&quot;
                         </p>
                       </motion.div>
                     </div>
