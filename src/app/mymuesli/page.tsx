@@ -349,23 +349,34 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
           </h3>
 
           <div className="flex-1 bg-[#f8fafc] shadow-[inset_6px_6px_12px_#e2e8f0,inset_-6px_-6px_12px_#ffffff] rounded-2xl p-6 relative flex flex-col md:flex-row gap-8 items-center justify-center border border-slate-50 overflow-hidden">
-              <div className="w-full max-w-sm space-y-4 relative z-0">
-                 
-                 {/* Step 1 */}
-                 <div className="w-full bg-slate-800 text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#cbd5e1]">
-                   Schritt 1: Basis (100%)
-                 </div>
-                 
-                 {/* Step 2 */}
-                 <div className="w-[85%] mx-auto bg-[#C80050] text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#f4b8c8] relative">
-                   Schritt 2: Zutaten (62%)
-                 </div>
-                 
-                 {/* Step 3 */}
-                 <div className="w-[50%] mx-auto bg-[#12504c] text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#a7f3d0] mt-8 md:mt-0">
-                   Checkout (28%)
-                 </div>
+              <div className="w-full max-w-md space-y-6 relative z-0 py-4">
+                 {[
+                   { step: "Schritt 1: Basis", rate: "100%", drop: null, trend: "+2,4%", trendPos: true, bg: "bg-slate-800", w: "w-full" },
+                   { step: "Schritt 2: Zutaten", rate: "62%", drop: "-38%", trend: "-4,1%", trendPos: false, bg: "bg-[#C80050]", w: "w-[85%]" },
+                   { step: "Checkout", rate: "28%", drop: "-55%", trend: "+0,2%", trendPos: true, bg: "bg-[#12504c]", w: "w-[50%]" }
+                 ].map((stage, i) => (
+                    <div key={i} className="relative flex flex-col items-center group">
+                       
+                       {/* Drop-off Indicator between steps */}
+                       {stage.drop && (
+                          <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
+                             <div className="h-4 border-l-2 border-dashed border-slate-300"></div>
+                             <span className="text-[10px] font-black tracking-widest text-slate-400 bg-[#f8fafc] px-2">{stage.drop} Drop-off</span>
+                          </div>
+                       )}
 
+                       {/* The Funnel Bar */}
+                       <div className={`${stage.w} ${stage.bg} text-white py-4 rounded-xl shadow-[4px_4px_10px_#cbd5e1] flex items-center justify-between px-6 relative transition-transform hover:scale-105 duration-300`}>
+                          <span className="text-xs font-bold uppercase tracking-wider">{stage.step}</span>
+                          <span className="text-xl font-black">{stage.rate}</span>
+                          
+                          {/* Graphical WoW Trend Badge (Foreground/Background floating) */}
+                          <div className={`absolute top-1/2 -translate-y-1/2 -right-4 md:-right-12 xl:-right-16 bg-white border ${stage.trendPos ? 'border-green-100 text-green-600' : 'border-red-100 text-[#C80050]'} px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 font-bold text-xs whitespace-nowrap opacity-90 group-hover:opacity-100 transition-opacity z-20`}>
+                             {stage.trendPos ? <TrendingUp size={14}/> : <TrendingDown size={14}/>} {stage.trend} <span className="text-[9px] text-slate-400 hidden xl:inline">vs. Vorwoche</span>
+                          </div>
+                       </div>
+                    </div>
+                 ))}
               </div>
 
               {/* OVERLAY FOR FUNNEL IN EDITOR MODE */}
