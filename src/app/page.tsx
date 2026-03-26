@@ -1,15 +1,16 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useAdmin } from "@/components/AdminProvider";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { DropzoneUploader } from "@/components/DropzoneUploader";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
 
 export default function Dashboard() {
   const { isAdmin, editMode, targetRevenue, setTargetRevenue, currentRevenue, csvData } = useAdmin();
+  const [isBlurred, setIsBlurred] = useState(false);
 
   if (!isAdmin) return null;
 
@@ -33,6 +34,8 @@ export default function Dashboard() {
     ];
   }
 
+  const blurClass = isBlurred ? "blur-md select-none opacity-40 transition-all duration-500" : "transition-all duration-500";
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-end mb-8">
@@ -40,6 +43,14 @@ export default function Dashboard() {
             <h2 className="text-2xl font-black text-foreground">Self-Service BI</h2>
             <p className="text-muted-foreground text-sm font-medium">CSV Upload Parsing in Echtzeit.</p>
          </div>
+         
+         <button 
+           onClick={() => setIsBlurred(!isBlurred)}
+           className="flex items-center gap-2 bg-background border border-border px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors text-slate-600"
+         >
+           {isBlurred ? <Eye size={16}/> : <EyeOff size={16}/>}
+           {isBlurred ? "Zahlen anzeigen" : "Zahlen ausblenden"}
+         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
@@ -54,10 +65,10 @@ export default function Dashboard() {
              )}
           </div>
           <div className="flex items-end gap-6 min-h-[60px]">
-            <div className="text-5xl font-black text-foreground">
+            <div className={`text-5xl font-black text-foreground ${blurClass}`}>
               €{currentRevenue.toLocaleString('de')}
             </div>
-            <div className="pb-1 text-sm font-bold text-muted-foreground opacity-60">
+            <div className={`pb-1 text-sm font-bold text-muted-foreground opacity-60 ${blurClass}`}>
               / €{targetRevenue.toLocaleString('de')} Target
             </div>
           </div>
@@ -76,9 +87,9 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 pb-16">
-        <Card className="p-8 h-[400px] flex flex-col">
+        <Card className="p-8 h-[400px] flex flex-col overflow-hidden">
           <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Umsatz Verlauf (Dynamisch Area)</p>
-          <div className="flex-1 w-full min-h-0">
+          <div className={`flex-1 w-full min-h-0 ${blurClass}`}>
              <ResponsiveContainer width="100%" height="100%">
                <AreaChart data={chartData}>
                  <defs>
@@ -95,9 +106,9 @@ export default function Dashboard() {
              </ResponsiveContainer>
           </div>
         </Card>
-        <Card className="p-8 h-[400px] flex flex-col">
+        <Card className="p-8 h-[400px] flex flex-col overflow-hidden">
           <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-6">Umsatz Segmentierung (Dynamisch Bar)</p>
-          <div className="flex-1 w-full min-h-0">
+          <div className={`flex-1 w-full min-h-0 ${blurClass}`}>
              <ResponsiveContainer width="100%" height="100%">
                <BarChart data={chartData}>
                  <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.05} vertical={false}/>

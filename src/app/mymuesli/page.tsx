@@ -58,7 +58,6 @@ export default function MyMuesliPresentation() {
             </div>
             <div>
               <p className="text-sm font-bold text-gray-900">David Dubinskiy</p>
-              <p className="text-xs text-gray-500 font-medium">Data-Driven UX &amp; Strategy</p>
             </div>
           </div>
         </div>
@@ -511,11 +510,11 @@ function Task2({ editorMode }: { editorMode: boolean }) {
                  {/* Notch */}
                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-xl z-20"></div>
                  {/* Screen */}
-                 <div className="bg-white w-full h-[600px] rounded-[2rem] overflow-hidden relative shadow-inner">
+                 <div className="bg-slate-100 w-full h-[600px] rounded-[2rem] overflow-hidden relative shadow-inner flex flex-col justify-start pt-4">
                     <img 
                       src="/mobile-mockup.jpg" 
                       alt="Mobile UI Preview" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto object-contain rounded-t-xl"
                     />
                  </div>
                </div>
