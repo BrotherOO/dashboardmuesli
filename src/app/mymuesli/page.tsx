@@ -75,7 +75,7 @@ export default function MyMuesliPresentation() {
           <div className="flex items-center gap-3 bg-slate-100 px-5 py-2.5 rounded-full border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-200 transition-colors" onClick={() => {
                 const toggled = !editorMode;
                 setEditorMode(toggled);
-                if (!toggled && (activeTab === 'spicker' || activeTab === 'qa')) {
+                if (!toggled && (activeTab === 'spicker' || activeTab === 'qa' || activeTab === 'cv')) {
                   setActiveTab('task1');
                 }
               }}>
