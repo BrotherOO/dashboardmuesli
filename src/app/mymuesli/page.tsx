@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -122,70 +122,70 @@ export default function MyMuesliPresentation() {
 }
 
 // ------ SUBCOMPONENTS ------
-
 function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab: (t:string)=>void }) {
-  const [activeKpi, setActiveKpi] = useState<string | null>(null);
-  const [funnelStep, setFunnelStep] = useState<number | null>(null);
-
   return (
     <div className="space-y-8">
       
       {/* KPI Section */}
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
-          <ChartBar className="text-[#f91f64]" size={22}/> Die &quot;Strategic View&quot; (Interaktive KPIs)
+        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+          <ChartBar className="text-[#f91f64]" size={22}/> Die &quot;Strategic View&quot; (Live KPIs)
         </h3>
-        <p className="text-slate-500 text-sm font-medium mb-6">
-          Klicke auf die Metriken, um meine strategische Herleitung zu sehen.
-        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <button onClick={() => setActiveKpi('umsatz')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'umsatz' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
-             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
-                Gesundheits-Check <MousePointerClick size={14} className="opacity-50"/>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+           {/* Umsatz */}
+           <div className="relative">
+             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
+               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Umsatz (Heute)</div>
+               <div className="text-2xl font-black text-slate-800">128.450 €</div>
+               <div className="text-xs text-green-600 font-bold mt-1">+12% vs. Vorwoche</div>
              </div>
-             <div className="text-2xl font-black text-slate-800">Umsatz &amp; CR</div>
-           </button>
+           </div>
            
-           <button onClick={() => setActiveKpi('aov')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'aov' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
-             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
-                Warenkorbwert <MousePointerClick size={14} className="opacity-50"/>
+           {/* CR */}
+           <div className="relative">
+             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
+               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Conversion Rate</div>
+               <div className="text-2xl font-black text-green-600">3,2 %</div>
+               <div className="text-xs text-slate-400 font-medium mt-1">D2C Food Benchmark</div>
              </div>
-             <div className="text-2xl font-black text-slate-800">AOV</div>
-           </button>
+           </div>
 
-           <button onClick={() => setActiveKpi('retention')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'retention' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
-             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
-                Müsli-Abo (Loyalität) <MousePointerClick size={14} className="opacity-50"/>
+           {/* AOV */}
+           <div className="relative">
+             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
+               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Average Order Value</div>
+               <div className="text-2xl font-black text-slate-800">44,80 €</div>
+               <div className="text-xs text-slate-400 font-medium mt-1">Ø 2-3 Dosen + Zubehör</div>
              </div>
-             <div className="text-2xl font-black text-slate-800">Retention Rate</div>
-           </button>
+           </div>
+
+           {/* Retention */}
+           <div className="relative">
+             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
+               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Retention Rate</div>
+               <div className="text-2xl font-black text-slate-800">68 %</div>
+               <div className="text-xs text-[#f91f64] font-bold mt-1">Starkes Abo-Modell</div>
+             </div>
+           </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          {activeKpi === 'umsatz' && (
-             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
-                <div className="bg-[#12504c]/5 border-l-4 border-[#12504c] p-4 rounded-r-xl">
-                  <p className="text-sm font-medium text-[#12504c] leading-relaxed">
-                    <strong>Mein Pitch:</strong> &quot;Ich starte meinen Tag mit dem Blick auf CR und AOV. Wenn der Umsatz sinkt, sehe ich hier sofort, ob wir ein Traffic-Problem haben (CR sinkt) oder ob die Kunden zwar kaufen, aber weniger pro Korb ausgeben (AOV sinkt).&quot;
+        {/* Global Insight for KPIs in Editor Mode */}
+        <AnimatePresence>
+          {editorMode && (
+             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-6 overflow-hidden flex flex-col md:flex-row gap-4">
+                <div className="flex-1 bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-sm">
+                  <p className="text-sm font-black text-[#f91f64] uppercase tracking-wide mb-2 flex items-center gap-2"><Lightbulb size={16}/> CR / Umsatz</p>
+                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                    <strong>Pitch:</strong> &quot;Mein Daily Health Check.&quot;<br/>
+                    <strong>Erklärung:</strong> &quot;CR zeigt die Shop-Effizienz auf. Der Fokus liegt bei mymuesli auf der Traffic-Qualität, statt purer Quantität.&quot;
                   </p>
                 </div>
-             </motion.div>
-          )}
-          {activeKpi === 'aov' && (
-             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
-                <div className="bg-[#f91f64]/5 border-l-4 border-[#f91f64] p-4 rounded-r-xl">
-                  <p className="text-sm font-medium text-[#f91f64] leading-relaxed">
-                    <strong>Hebel zur Steigerung:</strong> Cross-Selling von Dosen und Löffeln direkt im Checkout-Prozess (siehe Praxisaufgabe 3). 
-                  </p>
-                </div>
-             </motion.div>
-          )}
-          {activeKpi === 'retention' && (
-             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
-                <div className="bg-[#12504c]/5 border-l-4 border-[#12504c] p-4 rounded-r-xl">
-                  <p className="text-sm font-medium text-[#12504c] leading-relaxed">
-                    <strong>Mein Pitch:</strong> &quot;Da mymuesli stark auf Abos setzt, ist die Retention-Rate mein Frühwarnsystem. Sinkt sie, müssen wir im On-Site Merchandising gegensteuern, z.B. durch Re-Engagement-Kampagnen direkt auf der Startseite für eingeloggte User.&quot;
+                <div className="flex-1 bg-blue-50 border-l-4 border-blue-400 p-5 rounded-r-xl shadow-sm">
+                  <p className="text-sm font-black text-blue-600 uppercase tracking-wide mb-2 flex items-center gap-2"><Lightbulb size={16}/> AOV &amp; Thesis</p>
+                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                    <strong>Strategie:</strong> &quot;AOV-Steigerung durch Cross-Selling.&quot;<br/>
+                    <strong>Bezug Bachelorarbeit:</strong> &quot;Wie können wir Up-Selling Potenziale bei hoch-personalisierten Produkten heben, ohne den Nutzer zu überfordern?&quot;
                   </p>
                 </div>
              </motion.div>
@@ -194,78 +194,62 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
       </div>
 
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
           <TrendingUp className="text-[#f91f64]" size={22}/> Der Interaktive Mixer-Funnel (Deep-Dive)
         </h3>
-        <p className="text-slate-500 text-sm font-medium mb-6">
-          Klicke auf die Trichter-Stufen, um meine Schwachstellen-Analyse abzuleiten.
-        </p>
 
         {/* Interactive Dashboard Sketch */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-inner flex flex-col md:flex-row gap-6">
-            <div className="flex-[2] bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-               <div className="w-full max-w-sm space-y-3 relative">
-                 <button onClick={() => setFunnelStep(1)} className={`w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 ${funnelStep===1?'ring-2 ring-offset-2 ring-slate-800':''}`}>
-                   Schritt 1: Basis (100%) <MousePointerClick size={14} className="opacity-50"/>
-                 </button>
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-inner flex flex-col md:flex-row gap-6 relative">
+            <div className="flex-[2] bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center relative overflow-hidden md:overflow-visible">
+               <div className="w-full max-w-sm space-y-4">
                  
-                 <button onClick={() => setFunnelStep(2)} className={`w-[85%] mx-auto bg-[#C80050] hover:bg-[#a60042] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 block ${funnelStep===2?'ring-2 ring-offset-2 ring-[#C80050]':''}`}>
-                   Schritt 2: Zutaten (65%) <MousePointerClick size={14} className="opacity-50"/>
-                 </button>
+                 {/* Step 1 */}
+                 <div className="relative group">
+                   <div className="w-full bg-slate-800 text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm">
+                     Schritt 1: Basis (100%)
+                   </div>
+                 </div>
                  
-                 <button onClick={() => setFunnelStep(3)} className={`w-[50%] mx-auto bg-[#12504c] hover:bg-[#0b3330] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 block ${funnelStep===3?'ring-2 ring-offset-2 ring-[#12504c]':''}`}>
-                   Checkout (25%) <MousePointerClick size={14} className="opacity-50"/>
-                 </button>
+                 {/* Step 2 */}
+                 <div className="relative group">
+                   <div className="w-[85%] mx-auto bg-[#C80050] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm relative">
+                     Schritt 2: Zutaten (62%)
+                   </div>
+                   <AnimatePresence>
+                     {editorMode && (
+                       <motion.div initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} exit={{opacity:0, scale:0.95}} className="absolute md:left-[105%] left-0 top-[110%] md:top-0 w-64 bg-[#fff9e6] border-l-4 border-[#C80050] p-4 rounded-r-xl shadow-lg z-20">
+                          <p className="text-xs font-black text-[#C80050] uppercase tracking-wide mb-1 flex items-center gap-1"><AlertTriangle size={14}/> Kritischer Punkt</p>
+                          <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                            <strong>Choice Overload Gefahr.</strong> Hier verlieren wir 38% der User.<br/>
+                            <strong className="text-slate-900 mt-1 block">Lösung: Guided Selling Quiz.</strong>
+                          </p>
+                       </motion.div>
+                     )}
+                   </AnimatePresence>
+                 </div>
+                 
+                 {/* Step 3 */}
+                 <div className="relative group mt-8 md:mt-0">
+                   <div className="w-[50%] mx-auto bg-[#12504c] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm">
+                     Checkout (28%)
+                   </div>
+                 </div>
+
                </div>
-               
-               <AnimatePresence mode="wait">
-                  {funnelStep !== null && (
-                    <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} className="mt-6 w-full max-w-sm text-sm p-4 bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-medium">
-                       {funnelStep === 1 && <>&quot;Hier messen wir das erste Interesse. Wenn hier 40% abspringen, ist der Einstieg in den Mixer zu kompliziert.&quot;</>}
-                       {funnelStep === 2 && (
-                         <div className="space-y-2">
-                           <p><strong>Hypothese:</strong> Entscheidungsparalyse durch zu hohe Auswahl (Choice Overload).</p>
-                           <p className="text-[#f91f64]"><strong>Lösung:</strong> Siehe Aufgabe 3 (Guided Selling).</p>
-                         </div>
-                       )}
-                       {funnelStep === 3 && <>&quot;Hier geht es um Vertrauen. Abbrüche hier bedeuten Probleme mit Versandkosten oder Zahlungsarten.&quot;</>}
-                    </motion.div>
-                  )}
-               </AnimatePresence>
             </div>
 
             <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
               <div className="text-xs text-slate-400 uppercase font-black mb-4 tracking-wider">Alert Center</div>
               <button 
                 onClick={() => setActiveTab('task3')}
-                className="group flex flex-col items-center gap-2 text-xs bg-red-50 hover:bg-red-100 transition-colors text-red-700 p-4 rounded-xl border-2 border-red-200 cursor-pointer w-full shadow-sm"
+                className="group flex flex-col items-center gap-2 text-xs bg-red-50 hover:bg-red-100 transition-colors text-red-700 p-4 rounded-xl border-2 border-red-200 cursor-pointer w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
               >
                 <AlertTriangle size={24} className="animate-pulse text-red-600" />
-                <span className="font-bold text-sm">Drop-off in Step 2 kritisch (&gt;40%)</span>
+                <span className="font-bold text-sm">Drop-off in Step 2 kritisch</span>
                 <span className="text-xs mt-2 flex items-center gap-1 text-red-500 font-bold group-hover:text-red-700">Lösung ansehen <ArrowRight size={12}/></span>
               </button>
             </div>
         </div>
-
-        <AnimatePresence>
-          {editorMode && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              className="overflow-hidden"
-            >
-               <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-inner mb-4">
-                 <p className="text-sm text-slate-800 font-medium italic mb-3">
-                   <strong>Wissenschaftlicher Background:</strong> 
-                 </p>
-                 <button className="bg-white px-3 py-1.5 rounded-md text-xs font-bold text-[#f91f64] border border-[#f91f64]/20 shadow-sm hover:bg-[#f91f64]/5 transition-colors">
-                     Bachelorarbeit: Customization &amp; Psychologische Barrieren
-                 </button>
-               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );
