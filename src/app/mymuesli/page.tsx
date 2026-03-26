@@ -199,7 +199,7 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
           </h3>
           <div className="relative">
             <button className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-800 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#f91f64]">
-               📅 Letzte 7 Tage <ChevronRight size={14} className="rotate-90 opacity-50"/>
+               📅 Zeitraum: Letzte 7 Tage <ChevronRight size={14} className="rotate-90 opacity-50"/>
             </button>
             <AnimatePresence>
               {editorMode && (
@@ -236,21 +236,21 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Sitzungen (Traffic)</div>
              <div className="text-3xl font-black text-slate-800">42.000</div>
-             <div className="text-xs text-slate-500 font-bold mt-1 tracking-wide flex items-center gap-1"><Minus size={14}/> 0% vs. Vorwoche</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +2,4% vs. Vorwoche</div>
              <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest"><span className="text-blue-500">60% Mobile</span> / 40% Desktop</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Conversion Rate</div>
              <div className="text-3xl font-black text-slate-800">3,2 %</div>
-             <div className="text-xs text-[#C80050] font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingDown size={14}/> -0.4% vs. Vorwoche</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +0,2% vs. Vorwoche</div>
              <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Food D2C Benchmark</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Average Order Value</div>
              <div className="text-3xl font-black text-slate-800">44,80 €</div>
-             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +5% vs. Vorwoche</div>
+             <div className="text-xs text-[#C80050] font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingDown size={14}/> -1,5% vs. Vorwoche</div>
              <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Ø 2-3 Dosen + Zubehör</div>
            </NeoCard>
 

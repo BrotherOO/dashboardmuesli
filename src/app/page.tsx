@@ -10,7 +10,7 @@ import { AlertTriangle, CheckCircle, Eye, EyeOff } from "lucide-react";
 
 export default function Dashboard() {
   const { isAdmin, editMode, targetRevenue, setTargetRevenue, currentRevenue, csvData } = useAdmin();
-  const [isBlurred, setIsBlurred] = useState(false);
+  const [isBlurred, setIsBlurred] = useState(true);
 
   if (!isAdmin) return null;
 
