@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -123,133 +123,191 @@ export default function MyMuesliPresentation() {
 
 // ------ SUBCOMPONENTS ------
 function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab: (t:string)=>void }) {
+  // Helper form Neumorphism Card
+  const NeoCard = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
+    <div className={`p-5 rounded-2xl bg-[#f8fafc] shadow-[6px_6px_12px_#e2e8f0,-6px_-6px_12px_#ffffff] border border-slate-100 h-full flex flex-col justify-center relative overflow-hidden ${className}`}>
+      {children}
+    </div>
+  );
+
   return (
     <div className="space-y-8">
       
-      {/* KPI Section */}
-      <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-          <ChartBar className="text-[#f91f64]" size={22}/> Die &quot;Strategic View&quot; (Live KPIs)
+      {/* 1. EXTENDED KPI GRID */}
+      <div className="bg-white p-7 rounded-3xl shadow-sm border border-slate-200 relative">
+        <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
+          <ChartBar className="text-[#C80050]" size={24}/> Performance Cockpit
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-           {/* Umsatz */}
-           <div className="relative">
-             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
-               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Umsatz (Heute)</div>
-               <div className="text-2xl font-black text-slate-800">128.450 €</div>
-               <div className="text-xs text-green-600 font-bold mt-1">+12% vs. Vorwoche</div>
-             </div>
-           </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
            
-           {/* CR */}
-           <div className="relative">
-             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
-               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Conversion Rate</div>
-               <div className="text-2xl font-black text-green-600">3,2 %</div>
-               <div className="text-xs text-slate-400 font-medium mt-1">D2C Food Benchmark</div>
-             </div>
-           </div>
+           {/* Row 1 */}
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Gesamtumsatz (Heute)</div>
+             <div className="text-3xl font-black text-slate-800">128.450 €</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide">+12% vs. Vorwoche</div>
+             {/* Wellenlinie */}
+             <svg className="absolute bottom-0 left-0 w-full h-12 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
+               <motion.path 
+                 d="M0,10 Q25,20 50,10 T100,10 L100,20 L0,20 Z" 
+                 fill="#C80050"
+                 initial={{ pathLength: 0 }}
+                 animate={{ pathLength: 1 }}
+                 transition={{ duration: 2, ease: "easeInOut" }}
+               />
+             </svg>
+           </NeoCard>
 
-           {/* AOV */}
-           <div className="relative">
-             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
-               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Average Order Value</div>
-               <div className="text-2xl font-black text-slate-800">44,80 €</div>
-               <div className="text-xs text-slate-400 font-medium mt-1">Ø 2-3 Dosen + Zubehör</div>
-             </div>
-           </div>
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Sitzungen (Traffic)</div>
+             <div className="text-3xl font-black text-slate-800">42.000</div>
+             <div className="text-xs text-slate-500 font-bold mt-1 tracking-wide"><span className="text-blue-500">60% Mobile</span> / <span className="text-slate-400">40% Desktop</span></div>
+           </NeoCard>
 
-           {/* Retention */}
-           <div className="relative">
-             <div className="p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm h-full flex flex-col justify-center">
-               <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider">Retention Rate</div>
-               <div className="text-2xl font-black text-slate-800">68 %</div>
-               <div className="text-xs text-[#f91f64] font-bold mt-1">Starkes Abo-Modell</div>
-             </div>
-           </div>
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Conversion Rate</div>
+             <div className="text-3xl font-black text-green-600">3,2 %</div>
+             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Food D2C Benchmark</div>
+           </NeoCard>
+
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Average Order Value</div>
+             <div className="text-3xl font-black text-slate-800">44,80 €</div>
+             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Ø 2-3 Dosen + Zubehör</div>
+           </NeoCard>
+
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Retention Rate</div>
+             <div className="text-3xl font-black text-slate-800">68 %</div>
+             <div className="text-xs text-[#C80050] font-bold mt-1 tracking-wide">Starkes Abo-Modell</div>
+           </NeoCard>
+
+           <NeoCard>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Retourenquote</div>
+             <div className="text-3xl font-black text-green-600">1,5 %</div>
+             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Customized Food Standard</div>
+           </NeoCard>
+
+           {/* OVERLAYS FOR KPIs */}
+           <AnimatePresence>
+             {editorMode && (
+               <>
+                 <motion.div initial={{opacity:0, backdropFilter:"blur(0px)"}} animate={{opacity:1, backdropFilter:"blur(4px)"}} exit={{opacity:0, backdropFilter:"blur(0px)"}} className="absolute inset-0 z-10 p-6 rounded-3xl flex flex-col justify-center items-center bg-white/40">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+                      {/* Overlay 1: Traffic/Revenue */}
+                      <motion.div initial={{y:20}} animate={{y:0}} className="bg-[#12504c]/95 text-white p-6 rounded-2xl shadow-2xl border border-[#12504c] backdrop-blur-md">
+                        <div className="text-xs font-black uppercase tracking-widest text-[#f4b8c8] mb-2 flex items-center gap-2"><Lightbulb size={16}/> Umsatz &amp; Sitzungen</div>
+                        <p className="text-sm font-medium leading-relaxed">
+                          <strong>Messmethode:</strong> Google Analytics 4 (GA4).<br/>
+                          <strong>Pitch:</strong> &quot;Überwachung der Traffic-Qualität. Hohe Sitzungen bei sinkendem Umsatz deuten auf schlechte Landingpage-UX hin.&quot;
+                        </p>
+                      </motion.div>
+                      {/* Overlay 2: Retention */}
+                      <motion.div initial={{y:20}} animate={{y:0}} transition={{delay:0.1}} className="bg-[#C80050]/95 text-white p-6 rounded-2xl shadow-2xl border border-[#C80050] backdrop-blur-md">
+                        <div className="text-xs font-black uppercase tracking-widest text-[#ffedc2] mb-2 flex items-center gap-2"><Lightbulb size={16}/> Retention Rate</div>
+                        <p className="text-sm font-medium leading-relaxed">
+                          <strong>Messmethode:</strong> Shopify / Klaviyo Kohorten-Analyse.<br/>
+                          <strong>Wichtig:</strong> &quot;Die Loyalität senkt die Customer Acquisition Costs (CAC).&quot;
+                        </p>
+                      </motion.div>
+                    </div>
+                 </motion.div>
+               </>
+             )}
+           </AnimatePresence>
+
         </div>
-
-        {/* Global Insight for KPIs in Editor Mode */}
-        <AnimatePresence>
-          {editorMode && (
-             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-6 overflow-hidden flex flex-col md:flex-row gap-4">
-                <div className="flex-1 bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-sm">
-                  <p className="text-sm font-black text-[#f91f64] uppercase tracking-wide mb-2 flex items-center gap-2"><Lightbulb size={16}/> CR / Umsatz</p>
-                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
-                    <strong>Pitch:</strong> &quot;Mein Daily Health Check.&quot;<br/>
-                    <strong>Erklärung:</strong> &quot;CR zeigt die Shop-Effizienz auf. Der Fokus liegt bei mymuesli auf der Traffic-Qualität, statt purer Quantität.&quot;
-                  </p>
-                </div>
-                <div className="flex-1 bg-blue-50 border-l-4 border-blue-400 p-5 rounded-r-xl shadow-sm">
-                  <p className="text-sm font-black text-blue-600 uppercase tracking-wide mb-2 flex items-center gap-2"><Lightbulb size={16}/> AOV &amp; Thesis</p>
-                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
-                    <strong>Strategie:</strong> &quot;AOV-Steigerung durch Cross-Selling.&quot;<br/>
-                    <strong>Bezug Bachelorarbeit:</strong> &quot;Wie können wir Up-Selling Potenziale bei hoch-personalisierten Produkten heben, ohne den Nutzer zu überfordern?&quot;
-                  </p>
-                </div>
-             </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
-      <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-          <TrendingUp className="text-[#f91f64]" size={22}/> Der Interaktive Mixer-Funnel (Deep-Dive)
-        </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* 2. BESTSELLER SECTION */}
+        <div className="bg-white p-7 rounded-3xl shadow-sm border border-slate-200 lg:col-span-1">
+          <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
+            <CheckCircle2 className="text-[#12504c]" size={24}/> Bestseller Top 3
+          </h3>
+          <div className="space-y-4">
+             <div className="flex items-center justify-between p-4 bg-[#f8fafc] rounded-2xl shadow-[inset_4px_4px_8px_#e2e8f0,inset_-4px_-4px_8px_#ffffff]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#C80050]/10 flex items-center justify-center text-[#C80050] font-black">1</div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-800">Individueller Mix</div>
+                    <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase">Der Mixer</div>
+                  </div>
+                </div>
+                <div className="text-lg font-black text-[#C80050]">45%</div>
+             </div>
+             
+             <div className="flex items-center justify-between p-4 bg-[#f8fafc] rounded-2xl shadow-[inset_4px_4px_8px_#e2e8f0,inset_-4px_-4px_8px_#ffffff]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-black">2</div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-800">Beeren-Müsli</div>
+                    <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase">Fertig-Mix</div>
+                  </div>
+                </div>
+                <div className="text-lg font-black text-slate-600">20%</div>
+             </div>
 
-        {/* Interactive Dashboard Sketch */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-inner flex flex-col md:flex-row gap-6 relative">
-            <div className="flex-[2] bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center relative overflow-hidden md:overflow-visible">
-               <div className="w-full max-w-sm space-y-4">
+             <div className="flex items-center justify-between p-4 bg-[#f8fafc] rounded-2xl shadow-[inset_4px_4px_8px_#e2e8f0,inset_-4px_-4px_8px_#ffffff]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-black">3</div>
+                  <div>
+                    <div className="text-sm font-bold text-slate-800">Adventskalender</div>
+                    <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase">Saison-Treiber</div>
+                  </div>
+                </div>
+                <div className="text-lg font-black text-slate-600">15%</div>
+             </div>
+          </div>
+        </div>
+
+        {/* 3. INTERACTIVE FUNNEL */}
+        <div className="bg-white p-7 rounded-3xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col">
+          <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
+            <TrendingUp className="text-[#C80050]" size={24}/> Mixer-Funnel Analyse
+          </h3>
+
+          <div className="flex-1 bg-[#f8fafc] shadow-[inset_6px_6px_12px_#e2e8f0,inset_-6px_-6px_12px_#ffffff] rounded-2xl p-6 relative flex flex-col md:flex-row gap-8 items-center justify-center border border-slate-50 overflow-hidden">
+              <div className="w-full max-w-sm space-y-4 relative z-0">
                  
                  {/* Step 1 */}
-                 <div className="relative group">
-                   <div className="w-full bg-slate-800 text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm">
-                     Schritt 1: Basis (100%)
-                   </div>
+                 <div className="w-full bg-slate-800 text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#cbd5e1]">
+                   Schritt 1: Basis (100%)
                  </div>
                  
                  {/* Step 2 */}
-                 <div className="relative group">
-                   <div className="w-[85%] mx-auto bg-[#C80050] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm relative">
-                     Schritt 2: Zutaten (62%)
-                   </div>
-                   <AnimatePresence>
-                     {editorMode && (
-                       <motion.div initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} exit={{opacity:0, scale:0.95}} className="absolute md:left-[105%] left-0 top-[110%] md:top-0 w-64 bg-[#fff9e6] border-l-4 border-[#C80050] p-4 rounded-r-xl shadow-lg z-20">
-                          <p className="text-xs font-black text-[#C80050] uppercase tracking-wide mb-1 flex items-center gap-1"><AlertTriangle size={14}/> Kritischer Punkt</p>
-                          <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                            <strong>Choice Overload Gefahr.</strong> Hier verlieren wir 38% der User.<br/>
-                            <strong className="text-slate-900 mt-1 block">Lösung: Guided Selling Quiz.</strong>
-                          </p>
-                       </motion.div>
-                     )}
-                   </AnimatePresence>
+                 <div className="w-[85%] mx-auto bg-[#C80050] text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#f4b8c8] relative">
+                   Schritt 2: Zutaten (62%)
                  </div>
                  
                  {/* Step 3 */}
-                 <div className="relative group mt-8 md:mt-0">
-                   <div className="w-[50%] mx-auto bg-[#12504c] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm">
-                     Checkout (28%)
-                   </div>
+                 <div className="w-[50%] mx-auto bg-[#12504c] text-white text-xs font-bold text-center py-4 rounded-xl shadow-[4px_4px_10px_#a7f3d0] mt-8 md:mt-0">
+                   Checkout (28%)
                  </div>
 
-               </div>
-            </div>
+              </div>
 
-            <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-              <div className="text-xs text-slate-400 uppercase font-black mb-4 tracking-wider">Alert Center</div>
-              <button 
-                onClick={() => setActiveTab('task3')}
-                className="group flex flex-col items-center gap-2 text-xs bg-red-50 hover:bg-red-100 transition-colors text-red-700 p-4 rounded-xl border-2 border-red-200 cursor-pointer w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-              >
-                <AlertTriangle size={24} className="animate-pulse text-red-600" />
-                <span className="font-bold text-sm">Drop-off in Step 2 kritisch</span>
-                <span className="text-xs mt-2 flex items-center gap-1 text-red-500 font-bold group-hover:text-red-700">Lösung ansehen <ArrowRight size={12}/></span>
-              </button>
-            </div>
+              {/* OVERLAY FOR FUNNEL IN EDITOR MODE */}
+              <AnimatePresence>
+                {editorMode && (
+                   <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm rounded-2xl flex items-center justify-center p-6">
+                      <motion.div initial={{scale:0.9}} animate={{scale:1}} className="bg-slate-900/95 text-white p-6 rounded-2xl shadow-2xl border border-slate-800 max-w-sm w-full text-center">
+                        <div className="w-12 h-12 bg-[#C80050] rounded-full mx-auto flex items-center justify-center mb-4"><TrendingUp size={24}/></div>
+                        <h4 className="text-sm font-black uppercase tracking-widest text-[#f4b8c8] mb-3">Deep-Dive Analyse</h4>
+                        <p className="text-sm font-medium leading-relaxed">
+                          &quot;Hier identifiziere ich <strong>Reibungspunkte</strong>. Der extrem hohe Drop-off in Schritt 2 deutet auf kognitive Überlastung (&apos;Decision Fatigue&apos;) hin.&quot;
+                        </p>
+                        <button onClick={() => setActiveTab('task3')} className="mt-5 w-full bg-[#f4b8c8] text-[#C80050] font-black text-xs py-2 rounded-lg hover:bg-white transition-colors flex items-center justify-center gap-2">
+                           Ziele auf Guided Selling Quiz <ArrowRight size={14}/>
+                        </button>
+                      </motion.div>
+                   </motion.div>
+                )}
+              </AnimatePresence>
+          </div>
         </div>
+
       </div>
     </div>
   );
