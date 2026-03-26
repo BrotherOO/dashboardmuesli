@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Lightbulb, Info } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
-  const [learningMode, setLearningMode] = useState(false);
+  const [editorMode, setEditorMode] = useState(false);
 
   // Tab definitions
   const tabs = [
@@ -29,8 +29,7 @@ export default function MyMuesliPresentation() {
           <p className="px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Präsentation</p>
           <nav className="space-y-1">
             {tabs.map(tab => {
-              // Hide "Edit" tab if Lern-Modus is disabled
-              if (tab.id === 'spicker' && !learningMode) return null;
+              if ((tab.id === 'spicker' || tab.id === 'qa') && !editorMode) return null;
 
               return (
                 <button
@@ -65,34 +64,33 @@ export default function MyMuesliPresentation() {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden h-screen bg-slate-50">
+      <div className="flex-1 flex flex-col overflow-hidden h-screen bg-slate-50 relative">
         
         {/* HEADER */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-30 shrink-0">
           <h2 className="text-xl font-bold text-slate-800">
             {tabs.find(t => t.id === activeTab)?.label}
           </h2>
           
-          <div className="flex items-center gap-3 bg-slate-100 px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
-            <BrainCircuit size={18} className={learningMode ? 'text-[#f91f64]' : 'text-slate-400'} />
-            <span className={`text-sm font-bold ${learningMode ? 'text-slate-800' : 'text-slate-500'}`}>
-              Lern-Modus
-            </span>
-            <button 
-              onClick={() => {
-                setLearningMode(!learningMode);
-                // Reset active tab if it's currently on the hidden "spicker" and we disable learning mode
-                if (learningMode && activeTab === 'spicker') {
+          <div className="flex items-center gap-3 bg-slate-100 px-5 py-2.5 rounded-full border border-slate-200 shadow-sm cursor-pointer hover:bg-slate-200 transition-colors" onClick={() => {
+                const toggled = !editorMode;
+                setEditorMode(toggled);
+                if (!toggled && (activeTab === 'spicker' || activeTab === 'qa')) {
                   setActiveTab('task1');
                 }
-              }}
+              }}>
+            <BrainCircuit size={18} className={editorMode ? 'text-[#f91f64]' : 'text-slate-400'} />
+            <span className={`text-sm font-bold ${editorMode ? 'text-slate-800' : 'text-slate-500'}`}>
+              Editor
+            </span>
+            <button 
               className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#f91f64] focus:ring-offset-2 ${
-                learningMode ? 'bg-[#f91f64]' : 'bg-slate-300'
+                editorMode ? 'bg-[#f91f64]' : 'bg-slate-300'
               }`}
             >
               <span 
                 className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                  learningMode ? 'translate-x-6' : 'translate-x-1'
+                  editorMode ? 'translate-x-6' : 'translate-x-1'
                 } shadow-sm`}
               />
             </button>
@@ -100,7 +98,7 @@ export default function MyMuesliPresentation() {
         </header>
 
         {/* SCROLLABLE CONTENT AREA */}
-        <main className="flex-1 overflow-y-auto p-8 relative">
+        <main className="flex-1 overflow-y-auto p-8 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -110,11 +108,11 @@ export default function MyMuesliPresentation() {
               transition={{ duration: 0.2 }}
               className="max-w-5xl mx-auto pb-12"
             >
-              {activeTab === 'task1' && <Task1 learningMode={learningMode} />}
-              {activeTab === 'task2' && <Task2 learningMode={learningMode} />}
-              {activeTab === 'task3' && <Task3 learningMode={learningMode} />}
-              {activeTab === 'qa' && <Faq learningMode={learningMode} />}
-              {activeTab === 'spicker' && <Spicker learningMode={learningMode} />}
+              {activeTab === 'task1' && <Task1 editorMode={editorMode} setActiveTab={setActiveTab} />}
+              {activeTab === 'task2' && <Task2 editorMode={editorMode} />}
+              {activeTab === 'task3' && <Task3 editorMode={editorMode} />}
+              {activeTab === 'qa' && <Faq editorMode={editorMode} />}
+              {activeTab === 'spicker' && <Spicker editorMode={editorMode} />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -125,95 +123,145 @@ export default function MyMuesliPresentation() {
 
 // ------ SUBCOMPONENTS ------
 
-function Task1({ learningMode }: { learningMode: boolean }) {
+function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab: (t:string)=>void }) {
+  const [activeKpi, setActiveKpi] = useState<string | null>(null);
+  const [funnelStep, setFunnelStep] = useState<number | null>(null);
+
   return (
     <div className="space-y-8">
+      
+      {/* KPI Section */}
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <ChartBar className="text-[#f91f64]" size={22}/> 1. KPIs &amp; Messmethoden
+        <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+          <ChartBar className="text-[#f91f64]" size={22}/> Die &quot;Strategic View&quot; (Interaktive KPIs)
         </h3>
-        <p className="text-slate-600 leading-relaxed font-medium">
-          Conversion Rate (CR), Average Order Value (AOV), Retention Rate, Bounce Rate. Messung via Google Analytics 4 (GA4) und Shopify/Klaviyo.
+        <p className="text-slate-500 text-sm font-medium mb-6">
+          Klicke auf die Metriken, um meine strategische Herleitung zu sehen.
         </p>
-        
-        <AnimatePresence>
-          {learningMode && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              className="overflow-hidden"
-            >
-               <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-inner">
-                 <p className="text-sm text-slate-800 font-medium leading-relaxed">
-                   <strong className="text-slate-900">CR:</strong> Wie viel % der Besucher kaufen? (Zeigt Effizienz des Shops).<br/>
-                   <strong className="text-slate-900">AOV:</strong> Durchschnittlicher Warenkorbwert (Wichtig für Profitabilität).<br/>
-                   <strong className="text-slate-900">Retention Rate:</strong> Wiederkäufer-Quote (Extrem wichtig für das mymuesli-Abo-Modell).<br/>
-                   <strong className="text-slate-900">Bounce Rate:</strong> Absprungrate, besonders kritisch im Müsli-Mixer.
-                 </p>
-               </div>
-            </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <button onClick={() => setActiveKpi('umsatz')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'umsatz' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
+             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
+                Gesundheits-Check <MousePointerClick size={14} className="opacity-50"/>
+             </div>
+             <div className="text-2xl font-black text-slate-800">Umsatz &amp; CR</div>
+           </button>
+           
+           <button onClick={() => setActiveKpi('aov')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'aov' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
+             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
+                Warenkorbwert <MousePointerClick size={14} className="opacity-50"/>
+             </div>
+             <div className="text-2xl font-black text-slate-800">AOV</div>
+           </button>
+
+           <button onClick={() => setActiveKpi('retention')} className={`text-left p-5 rounded-xl border transition-all ${activeKpi === 'retention' ? 'border-[#f91f64] bg-[#f91f64]/5 shadow-sm scale-[1.02]' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-300'}`}>
+             <div className="text-xs text-slate-500 uppercase font-bold mb-1 tracking-wider flex items-center justify-between">
+                Müsli-Abo (Loyalität) <MousePointerClick size={14} className="opacity-50"/>
+             </div>
+             <div className="text-2xl font-black text-slate-800">Retention Rate</div>
+           </button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {activeKpi === 'umsatz' && (
+             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
+                <div className="bg-[#12504c]/5 border-l-4 border-[#12504c] p-4 rounded-r-xl">
+                  <p className="text-sm font-medium text-[#12504c] leading-relaxed">
+                    <strong>Mein Pitch:</strong> &quot;Ich starte meinen Tag mit dem Blick auf CR und AOV. Wenn der Umsatz sinkt, sehe ich hier sofort, ob wir ein Traffic-Problem haben (CR sinkt) oder ob die Kunden zwar kaufen, aber weniger pro Korb ausgeben (AOV sinkt).&quot;
+                  </p>
+                </div>
+             </motion.div>
+          )}
+          {activeKpi === 'aov' && (
+             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
+                <div className="bg-[#f91f64]/5 border-l-4 border-[#f91f64] p-4 rounded-r-xl">
+                  <p className="text-sm font-medium text-[#f91f64] leading-relaxed">
+                    <strong>Hebel zur Steigerung:</strong> Cross-Selling von Dosen und Löffeln direkt im Checkout-Prozess (siehe Praxisaufgabe 3). 
+                  </p>
+                </div>
+             </motion.div>
+          )}
+          {activeKpi === 'retention' && (
+             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mt-4 overflow-hidden">
+                <div className="bg-[#12504c]/5 border-l-4 border-[#12504c] p-4 rounded-r-xl">
+                  <p className="text-sm font-medium text-[#12504c] leading-relaxed">
+                    <strong>Mein Pitch:</strong> &quot;Da mymuesli stark auf Abos setzt, ist die Retention-Rate mein Frühwarnsystem. Sinkt sie, müssen wir im On-Site Merchandising gegensteuern, z.B. durch Re-Engagement-Kampagnen direkt auf der Startseite für eingeloggte User.&quot;
+                  </p>
+                </div>
+             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <TrendingUp className="text-[#f91f64]" size={22}/> 2. Visualisierung
+        <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+          <TrendingUp className="text-[#f91f64]" size={22}/> Der Interaktive Mixer-Funnel (Deep-Dive)
         </h3>
-        <p className="text-slate-600 leading-relaxed mb-6 font-medium">
-          High-Level-Kacheln (Umsatz, CR, AOV) ganz oben. Darunter Sales-Funnel als Trichtermotiv.
+        <p className="text-slate-500 text-sm font-medium mb-6">
+          Klicke auf die Trichter-Stufen, um meine Schwachstellen-Analyse abzuleiten.
         </p>
 
-        {/* Dashboard Sketch */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-4 shadow-inner">
-          <div className="flex gap-4 mb-6">
-             <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center items-center">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-1 tracking-wider">Umsatz (Heute)</div>
-               <div className="text-3xl font-black text-slate-800">€ 24.5k</div>
-             </div>
-             <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center items-center">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-1 tracking-wider">Conv. Rate</div>
-               <div className="text-3xl font-black text-green-600">3.8%</div>
-             </div>
-             <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center items-center">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-1 tracking-wider">AOV</div>
-               <div className="text-3xl font-black text-slate-800">€ 42.50</div>
-             </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-[2] bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-56 flex flex-col items-center justify-center">
-               <div className="w-full max-w-sm space-y-3">
-                 <div className="bg-slate-800 text-white text-xs font-bold text-center py-2.5 rounded-lg shadow-sm">Schritt 1: Basis wählen (100%)</div>
-                 <div className="bg-slate-600 text-white text-xs font-bold text-center py-2.5 rounded-lg w-[85%] mx-auto shadow-sm">Schritt 2: Zutaten (65%)</div>
-                 <div className="bg-slate-400 text-white text-xs font-bold text-center py-2.5 rounded-lg w-[50%] mx-auto shadow-sm">Checkout (25%)</div>
+        {/* Interactive Dashboard Sketch */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-inner flex flex-col md:flex-row gap-6">
+            <div className="flex-[2] bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+               <div className="w-full max-w-sm space-y-3 relative">
+                 <button onClick={() => setFunnelStep(1)} className={`w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 ${funnelStep===1?'ring-2 ring-offset-2 ring-slate-800':''}`}>
+                   Schritt 1: Basis (100%) <MousePointerClick size={14} className="opacity-50"/>
+                 </button>
+                 
+                 <button onClick={() => setFunnelStep(2)} className={`w-[85%] mx-auto bg-[#C80050] hover:bg-[#a60042] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 block ${funnelStep===2?'ring-2 ring-offset-2 ring-[#C80050]':''}`}>
+                   Schritt 2: Zutaten (65%) <MousePointerClick size={14} className="opacity-50"/>
+                 </button>
+                 
+                 <button onClick={() => setFunnelStep(3)} className={`w-[50%] mx-auto bg-[#12504c] hover:bg-[#0b3330] text-white text-xs font-bold text-center py-3 rounded-lg shadow-sm transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 block ${funnelStep===3?'ring-2 ring-offset-2 ring-[#12504c]':''}`}>
+                   Checkout (25%) <MousePointerClick size={14} className="opacity-50"/>
+                 </button>
                </div>
-               <div className="text-xs text-slate-400 mt-6 font-bold uppercase tracking-widest">Müsli-Mixer Funnel</div>
+               
+               <AnimatePresence mode="wait">
+                  {funnelStep !== null && (
+                    <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} className="mt-6 w-full max-w-sm text-sm p-4 bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-medium">
+                       {funnelStep === 1 && <>&quot;Hier messen wir das erste Interesse. Wenn hier 40% abspringen, ist der Einstieg in den Mixer zu kompliziert.&quot;</>}
+                       {funnelStep === 2 && (
+                         <div className="space-y-2">
+                           <p><strong>Hypothese:</strong> Entscheidungsparalyse durch zu hohe Auswahl (Choice Overload).</p>
+                           <p className="text-[#f91f64]"><strong>Lösung:</strong> Siehe Aufgabe 3 (Guided Selling).</p>
+                         </div>
+                       )}
+                       {funnelStep === 3 && <>&quot;Hier geht es um Vertrauen. Abbrüche hier bedeuten Probleme mit Versandkosten oder Zahlungsarten.&quot;</>}
+                    </motion.div>
+                  )}
+               </AnimatePresence>
             </div>
-            <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 h-56">
-              <div className="text-xs text-slate-400 uppercase font-bold mb-4 tracking-wider">Alert Center</div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2 text-xs bg-red-50 text-red-700 p-3 rounded-lg border border-red-100 font-medium">
-                  <AlertTriangle size={16} className="shrink-0 mt-0.5" />
-                  Drop-off in Step 2 über 40% (Kritisch im Vergleich zur Vorwoche)
-                </div>
-              </div>
+
+            <div className="flex-1 bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+              <div className="text-xs text-slate-400 uppercase font-black mb-4 tracking-wider">Alert Center</div>
+              <button 
+                onClick={() => setActiveTab('task3')}
+                className="group flex flex-col items-center gap-2 text-xs bg-red-50 hover:bg-red-100 transition-colors text-red-700 p-4 rounded-xl border-2 border-red-200 cursor-pointer w-full shadow-sm"
+              >
+                <AlertTriangle size={24} className="animate-pulse text-red-600" />
+                <span className="font-bold text-sm">Drop-off in Step 2 kritisch (&gt;40%)</span>
+                <span className="text-xs mt-2 flex items-center gap-1 text-red-500 font-bold group-hover:text-red-700">Lösung ansehen <ArrowRight size={12}/></span>
+              </button>
             </div>
-          </div>
         </div>
 
         <AnimatePresence>
-          {learningMode && (
+          {editorMode && (
             <motion.div 
               initial={{ opacity: 0, height: 0, marginTop: 0 }}
               animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
               exit={{ opacity: 0, height: 0, marginTop: 0 }}
               className="overflow-hidden"
             >
-               <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-inner">
-                 <p className="text-sm text-slate-800 font-medium italic">
-                   &quot;Ein Funnel (Trichter) zeigt genau, an welchem Schritt Kunden den Mixer verlassen (z.B. von &apos;Zutat wählen&apos; zu &apos;In den Warenkorb&apos;). So wissen wir genau, wo wir A/B-Tests ansetzen müssen.&quot;
+               <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-inner mb-4">
+                 <p className="text-sm text-slate-800 font-medium italic mb-3">
+                   <strong>Wissenschaftlicher Background:</strong> 
                  </p>
+                 <button className="bg-white px-3 py-1.5 rounded-md text-xs font-bold text-[#f91f64] border border-[#f91f64]/20 shadow-sm hover:bg-[#f91f64]/5 transition-colors">
+                     Bachelorarbeit: Customization &amp; Psychologische Barrieren
+                 </button>
                </div>
             </motion.div>
           )}
@@ -223,149 +271,213 @@ function Task1({ learningMode }: { learningMode: boolean }) {
   );
 }
 
-function Task2({ learningMode }: { learningMode: boolean }) {
+function Task2({ editorMode }: { editorMode: boolean }) {
+  const [season, setSeason] = useState<'summer'|'autumn'>('summer');
+  const [activeCard, setActiveCard] = useState<number|null>(null);
+
   const points = [
     {
-      title: '1. Produktauswahl',
-      standard: 'Fokus auf warme Müslis (Porridge), Herbst-Sorten (Apfel-Zimt) und erste Adventskalender-Teaser. Prominente Hero-Section.',
-      learning: '"Herbst ist \'Comfort Food\'-Zeit. Adventskalender sind Umsatztreiber im Q4. Wir müssen diese früh anteasern, um Vorbestellungen (Cashflow) zu generieren."'
+      title: 'Porridge Fokus',
+      standard: 'Warme Müslis rücken in die Hero-Section.',
+      learning: '"Herbst ist \'Comfort Food\'-Zeit. Wenn es draußen ungemütlich wird, konvertieren warme Breakfast-Bowls am besten."'
     },
     {
-      title: '2. Promotionen',
-      standard: '"Herbst-Probierpakete" und "Gratis-Porridge-Becher" ab Mindestbestellwert statt harter %. Rabatte zerstören.',
-      learning: '"Warum Gratis-Produkte statt Rabatte? Rabatte zerstören die Premium-Markenwahrnehmung und die Marge. Ein Gratis-Becher als \'Add-on\' steigert den Average Order Value (AOV), ohne das Hauptprodukt abzuwerten."'
+      title: 'Adventskalender',
+      standard: 'Frühzeitige Teaser & Pre-Sales implementieren.',
+      learning: '"Adventskalender sind massive Umsatztreiber im Q4. Wir müssen diese früh anteasern, um Vorbestellungen und Cashflow zu generieren, bevor die Konkurrenz im November startet."'
     },
     {
-      title: '3. Layout & UX',
-      standard: 'Warme Erdtöne, atmosphärische Lifestyle-Bilder (z.B. Tee & Müsli an Regentagen). Anpassung der Hero Banner.',
-      learning: '"Visuelle Identität anpassen: Durch meinen Background im Kommunikationsdesign weiß ich, dass Farbpsychologie die Kaufbereitschaft stark beeinflusst."'
+      title: 'Gratis Porridge-Becher',
+      standard: 'Add-on ab Mindestbestellwert (statt -20% Rabatt).',
+      learning: '"Warum Gratis-Produkte statt Rabatte? Rabatte zerstören die Premium-Markenwahrnehmung und killen unsere Marge. Ein Gratis-Becher als \'Add-on\' steigert den Average Order Value (AOV), ohne das Müsli abzuwerten."'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {points.map((pt, idx) => (
-         <div key={idx} className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200 flex flex-col h-full">
-            <h3 className="text-lg font-bold text-slate-800 mb-4">{pt.title}</h3>
-            <p className="text-slate-600 text-sm font-medium leading-relaxed flex-1">
-              {pt.standard}
-            </p>
-            <AnimatePresence>
-              {learningMode && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-4 rounded-r-xl mt-4 shadow-inner">
-                    <p className="text-sm text-slate-800 font-medium italic">
-                      {pt.learning}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+    <div className={`p-8 rounded-2xl shadow-sm border transition-colors duration-700 ${season === 'summer' ? 'bg-[#ffedc2] border-[#ffd000]/30' : 'bg-[#f4b8c8]/20 border-[#f91f64]/20'}`}>
+       <div className="flex justify-between items-center mb-8">
+         <h3 className="text-2xl font-black text-slate-800 flex items-center gap-2">
+            <Leaf className={season === 'summer' ? "text-yellow-600" : "text-[#f91f64]"} size={28}/> Saison-Strategie
+         </h3>
+         
+         {/* Slider Toggle */}
+         <div className="flex items-center gap-3 bg-white p-1.5 rounded-full shadow-sm">
+            <button onClick={() => setSeason('summer')} className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${season==='summer'?'bg-yellow-400 text-yellow-900 shadow-sm':'text-slate-400 hover:bg-slate-50'}`}>Sommer</button>
+            <button onClick={() => setSeason('autumn')} className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${season==='autumn'?'bg-[#f91f64] text-white shadow-sm':'text-slate-400 hover:bg-slate-50'}`}>Herbst / Q4</button>
          </div>
-      ))}
+       </div>
+
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         {points.map((pt, idx) => (
+            <button key={idx} onClick={() => setActiveCard(activeCard === idx ? null : idx)} className="bg-white p-7 rounded-2xl shadow-sm border border-white hover:border-[#f91f64]/30 transition-all flex flex-col h-full text-left focus:outline-none">
+               <h4 className="text-lg font-bold text-slate-800 mb-3 flex justify-between items-center">
+                  {pt.title}
+                  <MousePointerClick size={16} className="text-slate-300"/>
+               </h4>
+               <p className="text-slate-600 text-sm font-medium leading-relaxed mb-4">
+                 {pt.standard}
+               </p>
+               
+               <AnimatePresence>
+                 {(editorMode || activeCard === idx) && (
+                   <motion.div 
+                     initial={{ opacity: 0, height: 0 }}
+                     animate={{ opacity: 1, height: 'auto' }}
+                     exit={{ opacity: 0, height: 0 }}
+                     className="overflow-hidden mt-auto pt-4 border-t border-slate-100"
+                   >
+                     <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-4 rounded-r-xl">
+                       <p className="text-xs text-slate-800 font-bold italic">
+                         {pt.learning}
+                       </p>
+                     </div>
+                   </motion.div>
+                 )}
+               </AnimatePresence>
+            </button>
+         ))}
+       </div>
+
+       <AnimatePresence>
+         {editorMode && (
+           <motion.div initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="mt-8 bg-white/80 p-5 rounded-xl border border-white shadow-sm font-bold text-sm text-[#12504c] flex gap-3 items-center">
+              <Info size={20} className="shrink-0"/>
+              &quot;Visuelle Identität anpassen: Durch meinen Background im Kommunikationsdesign weiß ich, dass Farbpsychologie die Kaufbereitschaft stark beeinflusst. Ein warmer Übergang signalisiert dem Unterbewusstsein den Bedarf nach Comfort Food.&quot;
+           </motion.div>
+         )}
+       </AnimatePresence>
     </div>
   );
 }
 
-function Task3({ learningMode }: { learningMode: boolean }) {
+function Task3({ editorMode }: { editorMode: boolean }) {
   const ideas = [
     {
-      title: 'Idee 1: "Guided Selling" im Mixer',
-      standard: 'Vorgeschaltetes Mini-Quiz zur Vorauswahl (z.B. Fruchtig oder Schoko?).',
-      test: 'A/B-Test des Mini-Quiz vs. direkter Mixer-Einstieg',
-      reasoning: 'Reduziert "Choice Overload" bei Neukunden.',
-      result: 'Höhere Conversion Rate im Mixer.',
-      learning: '"Warum? Wegen dem \'Choice Overload\' (Überforderung durch zu viel Auswahl). Erwartetes Ergebnis: Höhere Conversion Rate im Mixer, da der Einstieg erleichtert wird (Bezug zu meiner Bachelorarbeit!)."'
+      title: 'Experiment A: "Guided Selling"',
+      test: 'Vorgeschaltetes Mini-Quiz vor dem Mixer vs. direkte Auswahl.',
+      reason: 'Reduziert "Choice Overload" bei Erstkäufern.',
+      result: 'Conversion Rate (CR) +15%',
+      impactMsg: '&quot;Warum? Wegen dem \'Choice Overload\'. Ein 3-Klick Quiz nimmt den Kunden psychologisch an die Hand.&quot;'
     },
     {
-      title: 'Idee 2: "One-Click Add-on" im Warenkorb',
-      standard: 'Passendes Zubehör (Löffel, mymuesli-Dose) kurz vor dem Checkout als 1-Klick-Option anbieten.',
-      test: 'Integration ins native Warenkorb-Layer',
-      reasoning: 'Geringe Hürde da keine Zusatz-Versandkosten anfallen.',
-      result: 'Direkte Steigerung des AOV.',
-      learning: '"Warum? Der Kunde ist bereits kaufbereit. Ein kleines Extra ohne Zusatz-Versandkosten ist ein No-Brainer. Erwartetes Ergebnis: Direkte Steigerung des Average Order Value (AOV)."'
+      title: 'Experiment B: "One-Click Add-on"',
+      test: 'mymuesli-Dose/Löffel nativ ins Warenkorb-Layer integrieren.',
+      reason: 'Mentaler Checkout ist bereits erfolgt. Sehr geringe Kaufhürde.',
+      result: 'Average Order Value (AOV) +€ 4.50',
+      impactMsg: '&quot;Der perfekte Zeitpunkt für Cross-Selling, da keine neuen Versandangst-Barrieren entstehen.&quot;'
     },
     {
-      title: 'Idee 3: Social Proof Integration',
-      standard: 'Kundenbewertungen und "Live-Kauf-Ticker" auf Produktseiten.',
-      test: 'Anzeige von Sternen/Zitaten direkt auf Kategorie-Ebene',
-      reasoning: 'Soziale Bestätigung baut sofort Vertrauen auf.',
-      result: 'Senkung der Bounce Rate.',
-      learning: '"Warum? Soziale Bestätigung baut Vertrauen ab der ersten Sekunde auf. Erwartetes Ergebnis: Senkung der Bounce Rate auf den Landingpages."'
+      title: 'Experiment C: "Prominenter Social Proof"',
+      test: 'Kundenbewertungen & Sterne auf Kategorie-Ebene anzeigen.',
+      reason: 'Vertrauensaufbau im ersten Kontakt.',
+      result: 'Bounce Rate -8%',
+      impactMsg: '&quot;Soziale Bestätigung baut sofort Risiko-Assoziationen bei teureren Food-Produkten ab.&quot;'
     }
   ];
 
   return (
     <div className="space-y-6">
-      {ideas.map((idea, idx) => (
-        <div key={idx} className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-bold text-[#f91f64] mb-3 flex items-center gap-2">
-            <Lightbulb size={20} /> {idea.title}
-          </h3>
-          <p className="text-slate-800 font-medium mb-5">{idea.standard}</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-2 tracking-wider">Test</div>
-               <div className="text-sm font-medium text-slate-700">{idea.test}</div>
-            </div>
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-2 tracking-wider">Begründung</div>
-               <div className="text-sm font-medium text-slate-700">{idea.reasoning}</div>
-            </div>
-            <div className="bg-green-50 p-4 rounded-xl border border-green-100 shadow-sm relative overflow-hidden">
-               <div className="absolute -right-2 -bottom-2 opacity-10"><TrendingUp size={48} /></div>
-               <div className="text-xs text-green-600 uppercase font-bold mb-2 tracking-wider">Ergebnis</div>
-               <div className="text-sm text-green-800 font-bold relative z-10">{idea.result}</div>
-            </div>
-          </div>
+       <div className="mb-6">
+          <h2 className="text-2xl font-black text-slate-800 mb-2">Der Optimierungs-Plan (A/B Testing)</h2>
+          <p className="text-slate-500 font-medium">Mit klickbaren A/B-Test Simulationen, um datengetriebenes UX-Design zu demonstrieren.</p>
+       </div>
 
-          <AnimatePresence>
-            {learningMode && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl mt-5 shadow-inner">
-                  <p className="text-sm text-slate-800 font-medium italic leading-relaxed">
-                    {idea.learning}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+      {ideas.map((idea, idx) => (
+         <ExperimentCard key={idx} idea={idea} editorMode={editorMode} />
       ))}
     </div>
   );
 }
 
-function Faq({ learningMode }: { learningMode: boolean }) {
+function ExperimentCard({ idea, editorMode }: { idea: { title: string, test: string, reason: string, result: string, impactMsg: string }, editorMode: boolean }) {
+   const [testState, setTestState] = useState<'idle'|'loading'|'done'>('idle');
+
+   const handleStart = () => {
+      setTestState('loading');
+      setTimeout(() => {
+         setTestState('done');
+      }, 1800);
+   };
+
+   return (
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+         <div className="flex justify-between items-start mb-4">
+            <h3 className="text-lg font-bold text-[#f91f64] flex items-center gap-2">
+              <Settings size={20} className={testState==='loading'?'animate-spin':''}/> {idea.title}
+            </h3>
+            {testState === 'idle' && (
+               <button onClick={handleStart} className="flex items-center gap-2 bg-[#12504c] hover:bg-[#0b3330] text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-transform active:scale-95">
+                  <PlayCircle size={16}/> Test starten
+               </button>
+            )}
+            {testState === 'loading' && (
+               <div className="flex items-center gap-2 bg-slate-100 text-slate-500 px-4 py-2 rounded-lg font-bold text-sm">
+                  <Loader2 size={16} className="animate-spin"/> Sammle Daten...
+               </div>
+            )}
+            {testState === 'done' && (
+               <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg font-black text-sm border border-green-200">
+                  <CheckCircle2 size={16}/> {idea.result}
+               </div>
+            )}
+         </div>
+
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+               <div className="text-xs text-slate-400 uppercase font-bold mb-1 tracking-wider">Hypothese &amp; Aufbau</div>
+               <div className="text-sm font-medium text-slate-700 mb-2">{idea.test}</div>
+               <div className="text-xs text-slate-500 italic border-l-2 border-slate-300 pl-2">{idea.reason}</div>
+            </div>
+
+            {/* Test Simulation Area */}
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center relative overflow-hidden">
+               {testState === 'idle' && (
+                  <div className="text-center text-slate-400 font-bold text-xs uppercase tracking-widest">Warte auf Test-Start</div>
+               )}
+               {testState === 'loading' && (
+                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                     <motion.div initial={{width: '0%'}} animate={{width: '100%'}} transition={{duration: 1.8, ease: "linear"}} className="h-full bg-[#f91f64]"/>
+                  </div>
+               )}
+               {testState === 'done' && (
+                  <motion.div initial={{scale:0.8, opacity:0}} animate={{scale:1, opacity:1}} className="text-center text-[#12504c] font-black text-lg">
+                     {idea.result}
+                     <div className="text-xs text-slate-500 font-medium mt-1">Signifikanz erreicht (99%)</div>
+                  </motion.div>
+               )}
+            </div>
+         </div>
+
+         <AnimatePresence>
+            {(editorMode && testState === 'done') && (
+               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden mt-4">
+                 <div dangerouslySetInnerHTML={{__html: `<div class="bg-[#fff9e6] border-l-4 border-[#ffd000] p-4 rounded-r-xl shadow-inner text-sm text-slate-800 font-bold italic">${idea.impactMsg} <br/><br/><span class="text-xs text-[#f91f64] uppercase tracking-wide">Brand-Fit: Authentic, Modern, Playful</span></div>`}} />
+               </motion.div>
+            )}
+         </AnimatePresence>
+      </div>
+   )
+}
+
+function Faq({ editorMode }: { editorMode: boolean }) {
   const faqs = [
     {
       category: 'Kategorie 1: Verteidigung (Stress-Test)',
       items: [
         {
-          q: '1. Die Margen-Frage (Der Klassiker)',
-          ask: '"Dein Vorschlag mit dem Gratis-Porridge-Becher ab 50€ klingt gut für den Kunden, aber das frisst unsere Marge auf. Warum sollten wir das tun?"',
+          q: '1. Die Margen-Frage',
+          ask: '"Dein Vorschlag mit dem Gratis-Becher ab 50€ frisst unsere Marge auf. Warum sollten wir das tun?"',
           ans: '"Wir tauschen kurzfristige Marge gegen langfristigen Customer Lifetime Value (CLV). Wenn der Kunde durch das Add-on von 40€ auf über 50€ Warenkorbwert kommt, sinkt unser prozentualer Anteil an den Versand- und Fulfillmentkosten. Außerdem ist ein mymuesli-Becher ein physischer Anker in der Küche des Kunden – er erinnert ihn jeden Morgen daran, sein Abo zu erneuern."'
         },
         {
           q: '2. Die IT-Frage (Ressourcen-Mangel)',
-          ask: '"Das \'Guided Selling\' Quiz im Mixer ist eine tolle Idee, aber unsere IT sagt, das dauert 3 Monate zu bauen. Was machen wir stattdessen?"',
-          ans: '"Wir bauen ein MVP (Minimum Viable Product). Bevor wir die IT blockieren, testen wir die Hypothese mit einem \'Fake Door Test\' oder binden ein simples Tool wie Typeform als Pop-up ein. Wenn wir sehen, dass 30% der Nutzer das Quiz anklicken, haben wir den Daten-Beweis (Proof of Concept), dass sich die 3 Monate IT-Entwicklung lohnen. Im E-Commerce testen wir erst, bevor wir teuer bauen."'
+          ask: '"Das \'Guided Selling\' Quiz im Mixer dauert 3 Monate zu bauen. Was machen wir stattdessen?"',
+          ans: '"Wir bauen ein MVP (Minimum Viable Product). Bevor wir die IT blockieren, testen wir die Hypothese mit einem \'Fake Door Test\'. Wenn wir sehen, dass 30% der Nutzer das Quiz anklicken, haben wir den Daten-Beweis, dass sich die 3 Monate IT-Entwicklung lohnen."'
         },
         {
           q: '3. Die Priorisierungs-Frage',
-          ask: '"Wir haben nur Kapazität für EINE deiner 3 Optimierungs-Ideen. Welche setzen wir morgen um und warum?"',
-          ans: '"Ganz klar: Das \'One-Click Add-on\' im Warenkorb. Das ist der tiefste Punkt im Funnel (Trichter). Der Kunde hat das Portemonnaie quasi schon in der Hand. Die technische Umsetzung ist bei Shopify extrem simpel (geringer Aufwand), und der direkte Impact auf den Average Order Value (AOV) ist sofort messbar."'
+          ask: '"Wir haben nur Kapazität für EINE deiner 3 Optimierungs-Ideen. Welche setzen wir morgen um?"',
+          ans: '"Ganz klar: Das \'One-Click Add-on\' im Warenkorb. Das ist der tiefste Punkt im Funnel. Der Kunde hat das Portemonnaie quasi schon in der Hand. Die technische Umsetzung ist extrem simpel (Low Hanging Fruits), und der direkte Impact auf den Average Order Value ist sofort messbar."'
         }
       ]
     },
@@ -374,54 +486,24 @@ function Faq({ learningMode }: { learningMode: boolean }) {
       items: [
         {
           q: '4. Die "Design vs. Daten"-Falle',
-          ask: '"Du hast gerade deinen Bachelor in Kommunikationsdesign gemacht. Ein On-Site Merchandiser wühlt aber den halben Tag in Excel-Tabellen und Google Analytics. Wird dir da nicht langweilig?"',
-          ans: '"Design ohne Daten ist Kunst. Im E-Commerce mache ich aber keine Kunst, sondern Conversion-Design. Mich motiviert nicht, ob ein Button \'schön\' aussieht, sondern ob ein A/B-Test zeigt, dass die neue Farbe 2% mehr Umsatz bringt. Bei MaxViral und PIXLIP habe ich genau an dieser Schnittstelle gearbeitet: Die Zahlen sagen mir, wo das Problem liegt, und das Design ist meine Lösung dafür."'
+          ask: '"Du hast einen Bachelor in Kommunikationsdesign. Wird dir bei Excel und Analytics nicht langweilig?"',
+          ans: '"Design ohne Daten ist Kunst. Im E-Commerce mache ich aber keine Kunst, sondern Conversion-Design. Mich motiviert nicht, ob ein Button \'schön\' aussieht, sondern ob ein A/B-Test zeigt, dass die neue Farbe 2% mehr Umsatz bringt. Die Zahlen sagen mir, wo das Problem liegt, und Design ist meine Lösung dafür."'
         },
         {
           q: '5. Die Shopify-Falle',
-          ask: '"Du bist Shopify-Experte. Unser mymuesli-Mixer mit seinen Millionen Kombinationen läuft aber über ein komplexes Custom-Backend. Ist das ein Problem für dich?"',
-          ans: '"Überhaupt nicht. Shopify war für mich das Werkzeug, um die Logik des E-Commerce (Warenkörbe, Checkouts, Kundenbindung) von der Pike auf zu lernen. Das Prinzip der Customer Journey bleibt gleich, egal auf welchem System. Ich freue mich darauf zu lernen, wie ihr diese massive Komplexität headless oder im Custom-Backend gelöst habt."'
-        }
-      ]
-    },
-    {
-      category: 'Kategorie 3: Das "Mindset" (Wenn du die Antwort nicht weißt)',
-      items: [
-        {
-          q: '6. Der "Notfall-Satz" für unbekannte Metriken',
-          ask: 'z.B.: "Wie hoch schätzt du unsere aktuelle Conversion Rate?"',
-          ans: '"Aus dem Stegreif kann ich Ihnen die exakte Zahl nicht nennen, da sie im D2C-Food-Bereich stark von Faktoren wie Mobile-Traffic und Saisonalität abhängt. Ich würde aber schätzen, sie liegt zwischen X und Y. Um das fundiert zu beantworten, wäre mein erster Schritt morgen früh, mir den GA4-Report für die letzten 30 Tage aufzurufen und die Checkout-Abbrüche zu analysieren."'
+          ask: '"Du bist Shopify-Experte. Unser mymuesli-Mixer läuft aber über ein komplexes Custom-Backend. Problem?"',
+          ans: '"Überhaupt nicht. Shopify war für mich das Werkzeug, um die Logik des E-Commerce von der Pike auf zu lernen. Das Prinzip der Customer Journey bleibt gleich. Ich freue mich darauf zu lernen, wie ihr diese massive Komplexität gelöst habt."'
         }
       ]
     }
   ];
 
-  if (!learningMode) {
-    return (
-      <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl shadow-sm border border-slate-200 min-h-[450px]">
-        <ShieldQuestion size={64} strokeWidth={1.5} className="text-slate-300 mb-6" />
-        <h3 className="text-2xl font-bold text-slate-800 mb-3">Interne Vorbereitung gesperrt</h3>
-        <p className="text-slate-500 max-w-lg font-medium">
-          Bitte aktiviere den <strong className="text-slate-700">Lern-Modus</strong> oben rechts, um die tiefgreifenden Antworten für das Interview-Sparring (&quot;Stress-Test&quot;) und Verteidigungsstrategien freizuschalten.
-        </p>
-      </div>
-    );
-  }
+  if (!editorMode) return null;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-10"
-    >
-      <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-5 rounded-r-xl mb-8 shadow-sm">
-        <p className="text-sm text-slate-800 font-medium leading-relaxed">
-          <strong className="text-[#f91f64] uppercase tracking-wide block mb-1">Dein stärkster Anker:</strong> Wenn sie dich in die Mangel nehmen, verweise immer auf deine Bachelorarbeit. 
-          <br/><em>&quot;Das ist ein hervorragender Einwand. Genau diesen Punkt (&apos;Choice Overload&apos; bei individuellen Produkten) habe ich in meiner Thesis ausführlich analysiert...&quot;</em> 
-          <br/>Das gibt dir sofortige wissenschaftliche Autorität.
-        </p>
-      </div>
-
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+      <h2 className="text-3xl font-black text-[#f91f64]">Stress-Test Vorbereitung</h2>
+      
       {faqs.map((cat, i) => (
         <div key={i} className="mb-8">
           <h2 className="text-xl font-black text-slate-800 mb-5 pb-3 border-b border-slate-200 flex items-center gap-2">
@@ -430,13 +512,12 @@ function Faq({ learningMode }: { learningMode: boolean }) {
           <div className="space-y-5">
             {cat.items.map((item, j) => (
               <div key={j} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-3 text-lg">{item.q}</h4>
-                <div className="bg-slate-50 p-4 rounded-xl text-sm font-medium text-slate-600 mb-4 border border-slate-100 italic relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-slate-300 rounded-l-xl"></div>
+                <h4 className="font-bold text-slate-900 mb-2 text-lg">{item.q}</h4>
+                <div className="bg-slate-50 p-3 rounded-lg text-sm font-medium text-slate-600 mb-4 border border-slate-100 italic">
                   {item.ask}
                 </div>
-                <div className="flex items-start gap-4 bg-green-50/50 p-4 rounded-xl border border-green-100/50">
-                  <div className="shrink-0 mt-1 bg-green-100 p-1 rounded-full text-green-600">
+                <div className="flex items-start gap-4 bg-[#12504c]/5 p-4 rounded-xl border border-[#12504c]/10">
+                  <div className="shrink-0 mt-1 bg-[#12504c]/10 p-1 rounded-full text-[#12504c]">
                      <ChevronRight size={16} strokeWidth={3} />
                   </div>
                   <p className="text-sm font-bold text-slate-800 leading-relaxed">
@@ -452,64 +533,39 @@ function Faq({ learningMode }: { learningMode: boolean }) {
   );
 }
 
-function Spicker({ learningMode }: { learningMode: boolean }) {
-  if (!learningMode) return null;
+function Spicker({ editorMode }: { editorMode: boolean }) {
+  if (!editorMode) return null;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-8"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
         <h2 className="text-2xl font-black text-[#f91f64] mb-6 tracking-tight">Culture Fit &amp; Management Summary</h2>
         <div className="space-y-8">
           
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">1. Die Master-Frage: &quot;Warum wollen Sie bei mymuesli arbeiten?&quot;</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">1. &quot;Warum wollen Sie bei mymuesli arbeiten?&quot;</h3>
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
-              &quot;Für mich ist mymuesli nicht einfach nur ein Onlineshop, sondern eine echte Pionier-Marke, die bereits seit 2007 den Markt für personalisierbare Bio-Lebensmittel prägt. Genau diese Individualität ist mein absolutes Steckenpferd: Ich habe meine Bachelorarbeit tiefgehend über individuelle Produkte im E-Commerce geschrieben. Euer Leitsatz &apos;MY WAY. MY MUESLI.&apos; bringt genau das auf den Punkt, woran ich glaube: Der Kunde möchte nicht irgendein Produkt, er möchte sein Produkt.<br/><br/>
-              Darüber hinaus identifiziere ich mich stark mit euren Markenwerten. E-Commerce ist oft sehr schnelllebig und rein konsumgetrieben. Bei mymuesli fasziniert mich, dass Wirtschaftlichkeit Hand in Hand mit Werten wie 100% Bio-Qualität, Nachhaltigkeit und dem klaren Ziel von &apos;Zero Food Waste&apos; geht. Dass ihr von Passau aus auf umweltfreundliche Verpackungen und absolut transparente, nachhaltige Produktionsstandards setzt, macht mymuesli für mich zu einer authentischen Marke. Ich möchte meine Energie im Performance Marketing und UX-Design für ein Unternehmen einsetzen, das nicht nur wachsen will, sondern auch verantwortungsvoll handelt.&quot;
+              &quot;Für mich ist mymuesli nicht einfach nur ein Onlineshop, sondern eine echte Pionier-Marke, die bereits seit 2007 den Markt für personalisierbare Bio-Lebensmittel prägt. Genau diese Individualität ist mein absolutes Steckenpferd: Ich habe meine Bachelorarbeit tiefgehend über individuelle Produkte im E-Commerce geschrieben. Euer Leitsatz &apos;MY WAY. MY MUESLI.&apos; bringt genau das auf den Punkt, woran ich glaube: Der Kunde möchte nicht irgendein Produkt, er möchte <strong>sein Produkt.</strong><br/><br/>
+              Darüber hinaus identifiziere ich mich stark mit euren Markenwerten. E-Commerce ist oft sehr schnelllebig und rein konsumgetrieben. Bei mymuesli fasziniert mich, dass Wirtschaftlichkeit Hand in Hand mit Werten wie 100% Bio-Qualität, Nachhaltigkeit und dem klaren Ziel von &apos;Zero Food Waste&apos; geht. Ich möchte meine Energie für ein Unternehmen einsetzen, das nicht nur wachsen will, sondern auch verantwortungsvoll handelt.&quot;
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">2. Frage: &quot;Wie passen Sie in unser Team und zu unserer Marke?&quot;</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">2. &quot;Wie passen Sie in unser Team und zu unserer Marke?&quot;</h3>
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
               &quot;Als Kommunikationsdesigner betrachte ich E-Commerce immer durch die Linse der Markenidentität. Ich sehe mymuesli als eine Marke, die extrem modern, lebendig (&apos;vibrant&apos;) und spielerisch (&apos;playful&apos;) auftritt, dabei aber immer clean und authentisch bleibt. Genau das ist mein Ansatz im Design: Ich sorge für saubere, intuitive Nutzeroberflächen, die Spaß machen und konvertieren.<br/><br/>
-              Wenn es um die Zusammenarbeit im Team geht, spiegele ich genau euren &apos;Tone of Voice&apos; wider: Ich arbeite enthusiastisch, schätze den persönlichen Austausch auf Augenhöhe und übernehme verantwortungsvoll meine Aufgaben (&apos;Responsible&apos;). Ihr sucht jemanden, der moderne E-Commerce-Standards setzt, und genau das bringe ich mit.&quot;
+              Wenn es um die Zusammenarbeit im Team geht, spiegele ich genau euren &apos;Tone of Voice&apos; wider: Ich arbeite enthusiastisch, schätze den persönlichen Austausch auf Augenhöhe und übernehme verantwortungsvoll meine Aufgaben (&apos;Responsible&apos;).&quot;
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">3. Frage: &quot;Was reizt Sie an unserem Produktportfolio?&quot;</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">3. &quot;Was reizt Sie an unserem Produktportfolio?&quot;</h3>
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
-              &quot;Was mich am meisten reizt, ist die Balance aus höchster Qualität und enormer Komplexität. Ihr bietet über 80 hochwertige Bio-Zutaten an, aus denen sich zahllose Kombinationen für Müslis, Porridges und Snacks erstellen lassen. Aus Sicht eines On-Site Merchandisers ist das die Königsklasse: Wie präsentiere ich diese massive Auswahl an gesunden, nachhaltigen Zutaten so, dass der Kunde inspiriert und nicht überfordert wird? Diese Brücke zwischen einem komplexen, 100% biologischen Produkt im Backend und einem völlig mühelosen, personalisierten Kauferlebnis im Frontend zu schlagen, ist genau die Herausforderung, für die ich brenne.&quot;
+              &quot;Was mich am meisten reizt, ist die Balance aus höchster Qualität und enormer Komplexität. Aus Sicht eines On-Site Merchandisers ist das die Königsklasse: Wie präsentiere ich diese massive Auswahl an gesunden, nachhaltigen Zutaten so, dass der Kunde inspiriert und nicht überfordert wird? Diese Brücke zwischen einem komplexen, 100% biologischen Produkt im Backend und einem völlig mühelosen, personalisierten Kauferlebnis im Frontend zu schlagen, ist genau die Herausforderung, für die ich brenne.&quot;
             </div>
           </div>
 
         </div>
-      </div>
-
-      <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-6 rounded-r-2xl shadow-sm">
-        <h3 className="text-[#f91f64] font-black uppercase tracking-wide mb-4 flex items-center gap-2">
-          <Lightbulb size={20} />
-          Spickzettel für spontane Rückfragen
-        </h3>
-        <ul className="space-y-4">
-          <li className="flex gap-3 items-start">
-             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
-             <p className="text-sm text-slate-800"><strong className="text-slate-900">Rabatte:</strong> &quot;Wir müssen aufpassen, dass wir mit Aktionen unsere Transparenz und die Authentizität der Marke nicht verwässern. Ein Bio-Produkt hat seinen Wert.&quot;</p>
-          </li>
-          <li className="flex gap-3 items-start">
-             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
-             <p className="text-sm text-slate-800"><strong className="text-slate-900">Retouren/Abbrüche:</strong> &quot;Jeder Optimierungsschritt im Mixer zahlt direkt auf unser &apos;Zero Food Waste&apos; Ziel ein. Ein Kunde, der exakt versteht, was er mischt, schickt nichts zurück.&quot;</p>
-          </li>
-          <li className="flex gap-3 items-start">
-             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
-             <p className="text-sm text-slate-800"><strong className="text-slate-900">Design-Anpassungen:</strong> &quot;Das neue Feature muss sich natürlich nahtlos in unsere &apos;eco-conscious&apos; und cleane Markenästhetik einfügen.&quot;</p>
-          </li>
-        </ul>
       </div>
 
     </motion.div>
