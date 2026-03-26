@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
 
 export default function Login() {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login, isAdmin } = useAdmin();
@@ -20,10 +21,10 @@ export default function Login() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(password)) {
+    if (login(username, password)) {
       router.push("/");
     } else {
-      setError("Zugriff verweigert. Versuchen Sie 'admin'.");
+      setError("Zugriff verweigert. Falscher Name oder Passwort.");
     }
   };
 
@@ -34,18 +35,26 @@ export default function Login() {
           <Lock size={24} />
         </div>
         <h1 className="text-2xl font-black mb-2 text-foreground">Secure Login</h1>
-        <p className="text-sm font-bold tracking-widest uppercase text-primary/70 mb-8 text-center">David Dubinskiy Analytics</p>
-        <form onSubmit={handleLogin} className="w-full space-y-6">
+        <p className="text-sm font-bold tracking-widest uppercase text-primary/70 mb-8 text-center">Dashboard Access</p>
+        <form onSubmit={handleLogin} className="w-full space-y-4">
+          <div className="space-y-2">
+            <Input 
+              type="text" 
+              placeholder="Name" 
+              value={username} 
+              onChange={(e) => setUsername(e.target.value)} 
+            />
+          </div>
           <div className="space-y-2">
             <Input 
               type="password" 
-              placeholder="Passwort ('admin')" 
+              placeholder="Passwort" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
             />
           </div>
           {error && <p className="text-sm text-primary text-center font-bold px-4">{error}</p>}
-          <Button type="submit" variant="primary" className="w-full">
+          <Button type="submit" variant="primary" className="w-full mt-2">
             Dashboard betreten
           </Button>
         </form>

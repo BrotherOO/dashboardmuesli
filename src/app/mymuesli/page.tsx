@@ -318,10 +318,10 @@ function Task2({ editorMode }: { editorMode: boolean }) {
 
   const pillars = [
     {
-      title: 'Fokus-Produkte',
+      title: 'Saisonale "Comfort Food" Produkte',
       subtitle: 'Produktauswahl & Platzierung',
-      text: 'Priorisierung von warmen Optionen (Porridge), Herbst-Gewürzen (Apfel-Zimt) und frühzeitiger Pre-Sale der Adventskalender. Platzierung: Prominent "Above the Fold".',
-      pitch: 'Strategie: Herbst ist \'Comfort Food\'-Zeit. Adventskalender müssen früh geteasert werden, um Cashflow zu sichern, bevor die Konkurrenz startet.'
+      text: 'Priorisierung von warmen Optionen wie Porridge und herbstlichen Bio-Mischungen (z.B. Apfel-Zimt-Blend). Diese Produkte werden als "Hero-Produkte" auf der Startseite platziert und in einer dedizierten "Herbst-Kollektion" auf Kategorieseite 1 gehoben.',
+      pitch: 'Strategie: Wenn die Tage kürzer werden, ändert sich das Frühstücksverhalten drastisch. Kalte Früchte-Müslis weichen warmen Bowls. Die Platzierung \'Above the Fold\' fängt diesen neuen Intent direkt ab.'
     },
     {
       title: 'Value-Add statt Rabatt',
@@ -379,39 +379,65 @@ function Task2({ editorMode }: { editorMode: boolean }) {
          </button>
       </div>
 
-      {/* 3. The Hero Mockup Banner */}
+      {/* 3. The Hero Mockup Display */}
       <AnimatePresence>
          {showHero && (
            <motion.div 
              initial={{ opacity: 0, height: 0, scale: 0.95 }} 
              animate={{ opacity: 1, height: 'auto', scale: 1 }} 
              exit={{ opacity: 0, height: 0, scale: 0.95 }}
-             className="overflow-hidden"
+             className="overflow-hidden pt-4"
            >
-             <div className="bg-gradient-to-r from-[#C80050] to-[#e65c00] rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[300px]">
-                
-                {/* Decorative background elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-                <div className="absolute bottom-0 left-1/4 w-40 h-40 bg-black opacity-10 rounded-full blur-2xl translate-y-1/2"></div>
-                
-                {/* Left Side: Copy & CTA */}
-                <div className="w-full md:w-[60%] z-10 text-white space-y-6">
-                   <h1 className="text-4xl md:text-5xl font-black leading-tight">Dein gemütlicher Start in den Herbst.</h1>
-                   <p className="text-lg md:text-xl font-medium text-white/90">
-                     Entdecke unsere neuen warmen Porridges und sichere dir deinen Adventskalender.
-                   </p>
-                   <button className="bg-white text-[#C80050] px-8 py-4 rounded-xl font-black hover:bg-slate-50 transition-colors shadow-lg mt-4 inline-block">
-                     Herbst-Genuss entdecken
-                   </button>
-                </div>
+             <div className="flex flex-col lg:flex-row gap-8 items-center justify-center p-4">
+               
+               {/* URL bar & Browser Frame (Desktop Preview) */}
+               <div className="w-full lg:w-2/3 bg-slate-100 rounded-xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
+                  {/* Browser Header */}
+                  <div className="h-10 bg-slate-200 flex items-center px-4 gap-2 border-b border-slate-300">
+                     <div className="flex gap-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                     </div>
+                     <div className="mx-auto bg-white/60 px-24 py-1 rounded-md text-[10px] text-slate-500 font-medium tracking-wide">mymuesli.com/herbst</div>
+                  </div>
+                  {/* Browser Content (Hero Section) */}
+                  <div className="relative bg-gradient-to-r from-[#d97736] to-[#C80050] p-8 md:p-12 overflow-hidden flex flex-col md:flex-row items-center min-h-[400px]">
+                     {/* Leaf Decorators */}
+                     <Leaf className="absolute top-4 left-4 text-white/10 -rotate-45" size={80}/>
+                     <Leaf className="absolute bottom-4 right-20 text-white/10 rotate-45" size={64}/>
+                     
+                     <div className="w-full md:w-[60%] z-10 text-white space-y-6">
+                       <h1 className="text-4xl md:text-5xl font-black leading-tight drop-shadow-lg">Goldener Herbst <br/>im Löffel.</h1>
+                       <p className="text-lg md:text-xl font-medium text-white/95">
+                         Erlebe die neue Apfel-Zimt Bio-Mischung. Der perfekte Start in die kuschelige Saison.
+                       </p>
+                       <button className="bg-white text-[#C80050] px-8 py-4 rounded-xl font-black hover:bg-slate-50 transition-colors shadow-lg inline-block mt-4">
+                         Jetzt probieren
+                       </button>
+                     </div>
+                     <div className="w-full md:w-[40%] mt-8 md:mt-0 z-10 flex justify-center">
+                        <div className="w-48 h-48 md:w-64 md:h-64 bg-white/20 backdrop-blur-md border border-white/40 rounded-full flex flex-col items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform">
+                           <Leaf size={48} className="text-white opacity-90 mb-2"/>
+                           <span className="text-white/90 font-bold text-sm uppercase tracking-widest text-center px-4 leading-tight">[Apfel-Zimt <br/>Bowl]</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
 
-                {/* Right Side: Visual Placeholder */}
-                <div className="w-full md:w-[35%] mt-8 md:mt-0 z-10 flex justify-center">
-                   <div className="w-48 h-48 md:w-64 md:h-64 bg-white/20 backdrop-blur-md border-2 border-white/40 rounded-full flex flex-col items-center justify-center shadow-xl rotate-3 hover:rotate-0 transition-transform cursor-pointer">
-                      <Leaf size={48} className="text-white opacity-80 mb-2"/>
-                      <span className="text-white/80 font-bold text-sm uppercase tracking-widest">[Müsli-Bowl]</span>
-                   </div>
-                </div>
+               {/* Mobile Phone Frame (Mobile Preview) */}
+               <div className="w-[300px] shrink-0 bg-slate-800 p-3 rounded-[2.5rem] shadow-2xl border-4 border-slate-700 relative">
+                 {/* Notch */}
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-xl z-20"></div>
+                 {/* Screen */}
+                 <div className="bg-white w-full h-[600px] rounded-[2rem] overflow-hidden relative shadow-inner">
+                    <img 
+                      src="/mobile-mockup.jpg" 
+                      alt="Mobile UI Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                 </div>
+               </div>
 
              </div>
            </motion.div>
@@ -437,7 +463,8 @@ function Task3({ editorMode }: { editorMode: boolean }) {
       what: 'Integration eines "1-Klick-Hinzufügen" Buttons für Zubehör (z.B. mymuesli 2go Becher für 5€) direkt im seitlichen Warenkorb-Slide-out.',
       why: 'Der "mentale Checkout" ist bereits erfolgt. Da keine extra Versandkosten anfallen, ist die Kaufhürde minimal.',
       result: 'Direkte Steigerung des Average Order Value (AOV) pro Transaktion.',
-      pitch: "Mein Pitch: Das ist eine 'Low Hanging Fruit' (schnell umsetzbar, großer Hebel). Warum im Layer und nicht im Checkout? Weil wir den Kunden im Checkout nicht mehr vom Bezahlen ablenken wollen. Der Warenkorb-Layer ist der perfekte Ort für Impulskäufe."
+      pitch: "Mein Pitch: Das ist eine 'Low Hanging Fruit' (schnell umsetzbar, großer Hebel). Warum im Layer und nicht im Checkout? Weil wir den Kunden im Checkout nicht mehr vom Bezahlen ablenken wollen. Der Warenkorb-Layer ist der perfekte Ort für Impulskäufe.",
+      imageMockup: "/cart-mockup.png"
     },
     {
       id: "Vorschlag 3",
@@ -463,15 +490,40 @@ function Task3({ editorMode }: { editorMode: boolean }) {
   );
 }
 
-function ProposalCard({ proposal, editorMode }: { proposal: { id: string, title: string, what: string, why: string, result: string, pitch: string }, editorMode: boolean }) {
+function ProposalCard({ proposal, editorMode }: { proposal: { id: string, title: string, what: string, why: string, result: string, pitch: string, imageMockup?: string }, editorMode: boolean }) {
+   const [showImage, setShowImage] = useState(false);
+
    return (
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col transition-all hover:shadow-md">
          <div className="p-6 md:p-8">
-            <div className="text-xs font-black tracking-widest text-[#f91f64] uppercase mb-2">{proposal.id}</div>
-            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <Settings size={22} className="text-slate-400"/> {proposal.title}
-            </h3>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <div className="text-xs font-black tracking-widest text-[#f91f64] uppercase mb-2">{proposal.id}</div>
+                <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <Settings size={22} className="text-slate-400"/> {proposal.title}
+                </h3>
+              </div>
+              
+              {proposal.imageMockup && (
+                <button 
+                  onClick={() => setShowImage(!showImage)}
+                  className="bg-[#12504c] hover:bg-[#0d3b38] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2"
+                >
+                  👁️ Mockup {showImage ? 'ausblenden' : 'ansehen'}
+                </button>
+              )}
+            </div>
             
+            <AnimatePresence>
+               {showImage && proposal.imageMockup && (
+                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden mb-6">
+                    <div className="bg-slate-100 p-2 border border-slate-200 rounded-2xl flex justify-center mt-2 shadow-inner">
+                       <img src={proposal.imageMockup} alt="UI Mockup" className="max-h-[500px] object-contain rounded-xl shadow-lg border border-slate-300" />
+                    </div>
+                 </motion.div>
+               )}
+            </AnimatePresence>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                <div className="space-y-2">
                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">

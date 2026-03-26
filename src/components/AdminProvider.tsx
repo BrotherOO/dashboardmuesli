@@ -7,7 +7,7 @@ interface AdminContextProps {
   isAdmin: boolean;
   editMode: boolean;
   setEditMode: (mode: boolean) => void;
-  login: (pw: string) => boolean;
+  login: (user: string, pw: string) => boolean;
   logout: () => void;
   
   targetRevenue: number;
@@ -38,8 +38,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   }, [router, pathname]);
 
-  const login = (pw: string) => {
-    if (pw === "admin" || pw === "admin/admin") {
+  const login = (user: string, pw: string) => {
+    if ((user === "Dubinskiy" && pw === "hallohallo1") || (user === "admin" && pw === "admin")) {
       setIsAdmin(true);
       localStorage.setItem("isAdmin", "true");
       return true;
