@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useAdmin } from "@/components/AdminProvider";
-import { LayoutDashboard, Filter, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Filter, Users, LogOut, Presentation } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,6 +31,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <Link href="/customers" className={navItemClass("/customers")}>
             <Users size={20} />
             Customer Insights
+          </Link>
+          <Link href="/mymuesli" className={navItemClass("/mymuesli")}>
+            <Presentation size={20} />
+            Interview Präsentation
           </Link>
         </nav>
         <div className="mt-auto space-y-6">
