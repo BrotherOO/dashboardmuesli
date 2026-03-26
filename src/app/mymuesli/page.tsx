@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, CheckCircle2, ArrowRight, Lightbulb, Target } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -422,27 +422,30 @@ function Task2({ editorMode }: { editorMode: boolean }) {
 }
 
 function Task3({ editorMode }: { editorMode: boolean }) {
-  const ideas = [
+  const proposals = [
     {
-      title: 'Experiment A: "Guided Selling"',
-      test: 'Vorgeschaltetes Mini-Quiz vor dem Mixer vs. direkte Auswahl.',
-      reason: 'Reduziert "Choice Overload" bei Erstkäufern.',
-      result: 'Conversion Rate (CR) +15%',
-      impactMsg: '&quot;Warum? Wegen dem \'Choice Overload\'. Ein 3-Klick Quiz nimmt den Kunden psychologisch an die Hand.&quot;'
+      id: "Vorschlag 1",
+      title: '"Guided Selling" Quiz vor dem Mixer',
+      what: 'Ein vorgeschaltetes 3-Fragen-Quiz vor dem Mixer. (1. Basis: Hafer/Crunchy/Protein? 2. Geschmack: Fruchtig/Schoko/Nussig? 3. Diät: Vegan/Glutenfrei?).',
+      why: 'Reduziert den "Choice Overload" (Entscheidungsparalyse) bei Neukunden, die von der großen Auswahl überfordert sind.',
+      result: 'Höhere Conversion Rate (CR) beim Einstieg in den Mixer und geringere Bounce Rate.',
+      pitch: "Mein Pitch: Das Quiz ist die perfekte Brücke zwischen Standard-Produkt und Milliarden Kombinationen. Das A/B-Test Setup wäre: Version A (Nutzer klickt auf 'Mixen' und landet direkt im leeren Mixer) vs. Version B (Nutzer klickt auf 'Mixen' und bekommt ein Pop-up mit 3 simplen Fragen zur Vorauswahl)."
     },
     {
-      title: 'Experiment B: "One-Click Add-on"',
-      test: 'mymuesli-Dose/Löffel nativ ins Warenkorb-Layer integrieren.',
-      reason: 'Mentaler Checkout ist bereits erfolgt. Sehr geringe Kaufhürde.',
-      result: 'Average Order Value (AOV) +€ 4.50',
-      impactMsg: '&quot;Der perfekte Zeitpunkt für Cross-Selling, da keine neuen Versandangst-Barrieren entstehen.&quot;'
+      id: "Vorschlag 2",
+      title: 'Native "One-Click Add-on" im Warenkorb-Layer',
+      what: 'Integration eines "1-Klick-Hinzufügen" Buttons für Zubehör (z.B. mymuesli 2go Becher für 5€) direkt im seitlichen Warenkorb-Slide-out.',
+      why: 'Der "mentale Checkout" ist bereits erfolgt. Da keine extra Versandkosten anfallen, ist die Kaufhürde minimal.',
+      result: 'Direkte Steigerung des Average Order Value (AOV) pro Transaktion.',
+      pitch: "Mein Pitch: Das ist eine 'Low Hanging Fruit' (schnell umsetzbar, großer Hebel). Warum im Layer und nicht im Checkout? Weil wir den Kunden im Checkout nicht mehr vom Bezahlen ablenken wollen. Der Warenkorb-Layer ist der perfekte Ort für Impulskäufe."
     },
     {
-      title: 'Experiment C: "Prominenter Social Proof"',
-      test: 'Kundenbewertungen & Sterne auf Kategorie-Ebene anzeigen.',
-      reason: 'Vertrauensaufbau im ersten Kontakt.',
-      result: 'Bounce Rate -8%',
-      impactMsg: '&quot;Soziale Bestätigung baut sofort Risiko-Assoziationen bei teureren Food-Produkten ab.&quot;'
+      id: "Vorschlag 3",
+      title: '"Surprise Me" – Community-Mix Generator',
+      what: 'Ein "Überrasch mich!" Button im Mixer, der die Röhre automatisch mit einem Mix aus aktuellen Bestseller-Zutaten der Community füllt.',
+      why: 'Verbindet den Wunsch nach Individualität mit Bequemlichkeit. Nutzt Gamification und Social Proof ("Was andere gerade lieben").',
+      result: 'Höhere Engagement-Time im Mixer und Upselling-Potenzial durch automatische Integration von Premium-Zutaten.',
+      pitch: "Mein Pitch: Wir haben Unmengen an Daten, was gut zusammen schmeckt. Nutzen wir sie! Wenn der Generator z.B. gefriergetrocknete Himbeeren (Premium-Zutat) beimischt und der Kunde das behält, pushen wir spielerisch den Warenkorbwert (AOV)."
     }
   ];
 
@@ -450,79 +453,66 @@ function Task3({ editorMode }: { editorMode: boolean }) {
     <div className="space-y-6">
        <div className="mb-6">
           <h2 className="text-2xl font-black text-slate-800 mb-2">Der Optimierungs-Plan (A/B Testing)</h2>
-          <p className="text-slate-500 font-medium">Mit klickbaren A/B-Test Simulationen, um datengetriebenes UX-Design zu demonstrieren.</p>
+          <p className="text-slate-500 font-medium">Ich habe drei Hebel identifiziert, die sich direkt auf unsere Kern-KPIs (CR und AOV) auswirken.</p>
        </div>
 
-      {ideas.map((idea, idx) => (
-         <ExperimentCard key={idx} idea={idea} editorMode={editorMode} />
+      {proposals.map((prop, idx) => (
+         <ProposalCard key={idx} proposal={prop} editorMode={editorMode} />
       ))}
     </div>
   );
 }
 
-function ExperimentCard({ idea, editorMode }: { idea: { title: string, test: string, reason: string, result: string, impactMsg: string }, editorMode: boolean }) {
-   const [testState, setTestState] = useState<'idle'|'loading'|'done'>('idle');
-
-   const handleStart = () => {
-      setTestState('loading');
-      setTimeout(() => {
-         setTestState('done');
-      }, 1800);
-   };
-
+function ProposalCard({ proposal, editorMode }: { proposal: { id: string, title: string, what: string, why: string, result: string, pitch: string }, editorMode: boolean }) {
    return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-         <div className="flex justify-between items-start mb-4">
-            <h3 className="text-lg font-bold text-[#f91f64] flex items-center gap-2">
-              <Settings size={20} className={testState==='loading'?'animate-spin':''}/> {idea.title}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col transition-all hover:shadow-md">
+         <div className="p-6 md:p-8">
+            <div className="text-xs font-black tracking-widest text-[#f91f64] uppercase mb-2">{proposal.id}</div>
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <Settings size={22} className="text-slate-400"/> {proposal.title}
             </h3>
-            {testState === 'idle' && (
-               <button onClick={handleStart} className="flex items-center gap-2 bg-[#12504c] hover:bg-[#0b3330] text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition-transform active:scale-95">
-                  <PlayCircle size={16}/> Test starten
-               </button>
-            )}
-            {testState === 'loading' && (
-               <div className="flex items-center gap-2 bg-slate-100 text-slate-500 px-4 py-2 rounded-lg font-bold text-sm">
-                  <Loader2 size={16} className="animate-spin"/> Sammle Daten...
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <CheckCircle2 size={16} className="text-blue-500"/> Beschreibung (Was?)
+                 </div>
+                 <p className="text-sm font-medium text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 h-full">
+                   {proposal.what}
+                 </p>
                </div>
-            )}
-            {testState === 'done' && (
-               <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg font-black text-sm border border-green-200">
-                  <CheckCircle2 size={16}/> {idea.result}
+
+               <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <Info size={16} className="text-yellow-500"/> Begründung (Warum?)
+                 </div>
+                 <p className="text-sm font-medium text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 h-full">
+                   {proposal.why}
+                 </p>
                </div>
-            )}
-         </div>
 
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-               <div className="text-xs text-slate-400 uppercase font-bold mb-1 tracking-wider">Hypothese &amp; Aufbau</div>
-               <div className="text-sm font-medium text-slate-700 mb-2">{idea.test}</div>
-               <div className="text-xs text-slate-500 italic border-l-2 border-slate-300 pl-2">{idea.reason}</div>
-            </div>
-
-            {/* Test Simulation Area */}
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-center relative overflow-hidden">
-               {testState === 'idle' && (
-                  <div className="text-center text-slate-400 font-bold text-xs uppercase tracking-widest">Warte auf Test-Start</div>
-               )}
-               {testState === 'loading' && (
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                     <motion.div initial={{width: '0%'}} animate={{width: '100%'}} transition={{duration: 1.8, ease: "linear"}} className="h-full bg-[#f91f64]"/>
-                  </div>
-               )}
-               {testState === 'done' && (
-                  <motion.div initial={{scale:0.8, opacity:0}} animate={{scale:1, opacity:1}} className="text-center text-[#12504c] font-black text-lg">
-                     {idea.result}
-                     <div className="text-xs text-slate-500 font-medium mt-1">Signifikanz erreicht (99%)</div>
-                  </motion.div>
-               )}
+               <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <Target size={16} className="text-green-500"/> Erwartetes Ergebnis
+                 </div>
+                 <p className="text-sm font-medium text-slate-700 leading-relaxed bg-green-50/50 p-4 rounded-xl border border-green-100 h-full text-green-900 border-l-4 border-l-green-400">
+                   {proposal.result}
+                 </p>
+               </div>
             </div>
          </div>
 
          <AnimatePresence>
-            {(editorMode && testState === 'done') && (
-               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden mt-4">
-                 <div dangerouslySetInnerHTML={{__html: `<div class="bg-[#fff9e6] border-l-4 border-[#ffd000] p-4 rounded-r-xl shadow-inner text-sm text-slate-800 font-bold italic">${idea.impactMsg} <br/><br/><span class="text-xs text-[#f91f64] uppercase tracking-wide">Brand-Fit: Authentic, Modern, Playful</span></div>`}} />
+            {editorMode && (
+               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                 <div className="bg-[#fff9e6] border-t border-[#ffd000]/30 p-6 md:p-8">
+                    <h4 className="text-sm font-black text-[#f91f64] uppercase tracking-wide flex items-center gap-2 mb-3">
+                      💡 A/B-Test Setup &amp; Mein Pitch
+                    </h4>
+                    <p className="text-sm text-slate-800 font-medium leading-relaxed italic border-l-4 border-[#f91f64] pl-4">
+                      {proposal.pitch}
+                    </p>
+                 </div>
                </motion.div>
             )}
          </AnimatePresence>
