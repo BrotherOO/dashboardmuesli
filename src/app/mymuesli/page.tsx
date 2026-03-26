@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Lightbulb } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, AlertTriangle, Lightbulb, Info } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -13,7 +13,8 @@ export default function MyMuesliPresentation() {
     { id: 'task1', label: 'Aufgabe 1: Dashboard', icon: <ChartBar size={20} /> },
     { id: 'task2', label: 'Aufgabe 2: Merchandising', icon: <Leaf size={20} /> },
     { id: 'task3', label: 'Aufgabe 3: Praxisaufgabe', icon: <Settings size={20} /> },
-    { id: 'qa', label: 'Q&A (Stress-Test)', icon: <ShieldQuestion size={20} /> }
+    { id: 'qa', label: 'Q&A (Stress-Test)', icon: <ShieldQuestion size={20} /> },
+    { id: 'spicker', label: 'Edit', icon: <Info size={20} /> }
   ];
 
   return (
@@ -22,27 +23,32 @@ export default function MyMuesliPresentation() {
       {/* SIDEBAR */}
       <div className="w-72 bg-white border-r border-gray-200 flex flex-col shadow-sm">
         <div className="p-6 border-b border-gray-100 flex items-center justify-center">
-          <h1 className="text-3xl font-black tracking-tight text-[#C80050]">mymuesli</h1>
+          <h1 className="text-3xl font-black tracking-tight text-[#f91f64]">mymuesli</h1>
         </div>
         <div className="flex-1 overflow-y-auto py-6">
           <p className="px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Präsentation</p>
           <nav className="space-y-1">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors ${
-                  activeTab === tab.id 
-                    ? 'bg-[#C80050]/10 text-[#C80050] border-r-4 border-[#C80050]' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-r-4 border-transparent'
-                }`}
-              >
-                <div className={`${activeTab === tab.id ? 'text-[#C80050]' : 'text-gray-400'}`}>
-                  {tab.icon}
-                </div>
-                {tab.label}
-              </button>
-            ))}
+            {tabs.map(tab => {
+              // Hide "Edit" tab if Lern-Modus is disabled
+              if (tab.id === 'spicker' && !learningMode) return null;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors ${
+                    activeTab === tab.id 
+                      ? 'bg-[#f91f64]/10 text-[#f91f64] border-r-4 border-[#f91f64]' 
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-r-4 border-transparent'
+                  }`}
+                >
+                  <div className={`${activeTab === tab.id ? 'text-[#f91f64]' : 'text-gray-400'}`}>
+                    {tab.icon}
+                  </div>
+                  {tab.label}
+                </button>
+              );
+            })}
           </nav>
         </div>
         <div className="p-6 border-t border-gray-100 bg-gray-50">
@@ -52,7 +58,7 @@ export default function MyMuesliPresentation() {
             </div>
             <div>
               <p className="text-sm font-bold text-gray-900">David Dubinskiy</p>
-              <p className="text-xs text-gray-500 font-medium">Data-Driven UX & Strategy</p>
+              <p className="text-xs text-gray-500 font-medium">Data-Driven UX &amp; Strategy</p>
             </div>
           </div>
         </div>
@@ -68,14 +74,20 @@ export default function MyMuesliPresentation() {
           </h2>
           
           <div className="flex items-center gap-3 bg-slate-100 px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
-            <BrainCircuit size={18} className={learningMode ? 'text-[#C80050]' : 'text-slate-400'} />
+            <BrainCircuit size={18} className={learningMode ? 'text-[#f91f64]' : 'text-slate-400'} />
             <span className={`text-sm font-bold ${learningMode ? 'text-slate-800' : 'text-slate-500'}`}>
               Lern-Modus
             </span>
             <button 
-              onClick={() => setLearningMode(!learningMode)}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#C80050] focus:ring-offset-2 ${
-                learningMode ? 'bg-[#C80050]' : 'bg-slate-300'
+              onClick={() => {
+                setLearningMode(!learningMode);
+                // Reset active tab if it's currently on the hidden "spicker" and we disable learning mode
+                if (learningMode && activeTab === 'spicker') {
+                  setActiveTab('task1');
+                }
+              }}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#f91f64] focus:ring-offset-2 ${
+                learningMode ? 'bg-[#f91f64]' : 'bg-slate-300'
               }`}
             >
               <span 
@@ -102,6 +114,7 @@ export default function MyMuesliPresentation() {
               {activeTab === 'task2' && <Task2 learningMode={learningMode} />}
               {activeTab === 'task3' && <Task3 learningMode={learningMode} />}
               {activeTab === 'qa' && <Faq learningMode={learningMode} />}
+              {activeTab === 'spicker' && <Spicker learningMode={learningMode} />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -117,7 +130,7 @@ function Task1({ learningMode }: { learningMode: boolean }) {
     <div className="space-y-8">
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <ChartBar className="text-[#C80050]" size={22}/> 1. KPIs & Messmethoden
+          <ChartBar className="text-[#f91f64]" size={22}/> 1. KPIs &amp; Messmethoden
         </h3>
         <p className="text-slate-600 leading-relaxed font-medium">
           Conversion Rate (CR), Average Order Value (AOV), Retention Rate, Bounce Rate. Messung via Google Analytics 4 (GA4) und Shopify/Klaviyo.
@@ -146,7 +159,7 @@ function Task1({ learningMode }: { learningMode: boolean }) {
 
       <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <TrendingUp className="text-[#C80050]" size={22}/> 2. Visualisierung
+          <TrendingUp className="text-[#f91f64]" size={22}/> 2. Visualisierung
         </h3>
         <p className="text-slate-600 leading-relaxed mb-6 font-medium">
           High-Level-Kacheln (Umsatz, CR, AOV) ganz oben. Darunter Sales-Funnel als Trichtermotiv.
@@ -199,7 +212,7 @@ function Task1({ learningMode }: { learningMode: boolean }) {
             >
                <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-5 rounded-r-xl shadow-inner">
                  <p className="text-sm text-slate-800 font-medium italic">
-                   "Ein Funnel (Trichter) zeigt genau, an welchem Schritt Kunden den Mixer verlassen (z.B. von 'Zutat wählen' zu 'In den Warenkorb'). So wissen wir genau, wo wir A/B-Tests ansetzen müssen."
+                   &quot;Ein Funnel (Trichter) zeigt genau, an welchem Schritt Kunden den Mixer verlassen (z.B. von &apos;Zutat wählen&apos; zu &apos;In den Warenkorb&apos;). So wissen wir genau, wo wir A/B-Tests ansetzen müssen.&quot;
                  </p>
                </div>
             </motion.div>
@@ -245,7 +258,7 @@ function Task2({ learningMode }: { learningMode: boolean }) {
                   exit={{ opacity: 0, height: 0, marginTop: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="bg-[#fff9e6] border-l-4 border-[#C80050] p-4 rounded-r-xl mt-4 shadow-inner">
+                  <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-4 rounded-r-xl mt-4 shadow-inner">
                     <p className="text-sm text-slate-800 font-medium italic">
                       {pt.learning}
                     </p>
@@ -291,7 +304,7 @@ function Task3({ learningMode }: { learningMode: boolean }) {
     <div className="space-y-6">
       {ideas.map((idea, idx) => (
         <div key={idx} className="bg-white p-7 rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-bold text-[#C80050] mb-3 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-[#f91f64] mb-3 flex items-center gap-2">
             <Lightbulb size={20} /> {idea.title}
           </h3>
           <p className="text-slate-800 font-medium mb-5">{idea.standard}</p>
@@ -389,7 +402,7 @@ function Faq({ learningMode }: { learningMode: boolean }) {
         <ShieldQuestion size={64} strokeWidth={1.5} className="text-slate-300 mb-6" />
         <h3 className="text-2xl font-bold text-slate-800 mb-3">Interne Vorbereitung gesperrt</h3>
         <p className="text-slate-500 max-w-lg font-medium">
-          Bitte aktiviere den <strong className="text-slate-700">Lern-Modus</strong> oben rechts, um die tiefgreifenden Antworten für das Interview-Sparring ("Stress-Test") und Verteidigungsstrategien freizuschalten.
+          Bitte aktiviere den <strong className="text-slate-700">Lern-Modus</strong> oben rechts, um die tiefgreifenden Antworten für das Interview-Sparring (&quot;Stress-Test&quot;) und Verteidigungsstrategien freizuschalten.
         </p>
       </div>
     );
@@ -401,10 +414,10 @@ function Faq({ learningMode }: { learningMode: boolean }) {
       animate={{ opacity: 1 }}
       className="space-y-10"
     >
-      <div className="bg-[#fff9e6] border-l-4 border-[#C80050] p-5 rounded-r-xl mb-8 shadow-sm">
+      <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-5 rounded-r-xl mb-8 shadow-sm">
         <p className="text-sm text-slate-800 font-medium leading-relaxed">
-          <strong className="text-[#C80050] uppercase tracking-wide block mb-1">Dein stärkster Anker:</strong> Wenn sie dich in die Mangel nehmen, verweise immer auf deine Bachelorarbeit. 
-          <br/><em>"Das ist ein hervorragender Einwand. Genau diesen Punkt ('Choice Overload' bei individuellen Produkten) habe ich in meiner Thesis ausführlich analysiert..."</em> 
+          <strong className="text-[#f91f64] uppercase tracking-wide block mb-1">Dein stärkster Anker:</strong> Wenn sie dich in die Mangel nehmen, verweise immer auf deine Bachelorarbeit. 
+          <br/><em>&quot;Das ist ein hervorragender Einwand. Genau diesen Punkt (&apos;Choice Overload&apos; bei individuellen Produkten) habe ich in meiner Thesis ausführlich analysiert...&quot;</em> 
           <br/>Das gibt dir sofortige wissenschaftliche Autorität.
         </p>
       </div>
@@ -412,7 +425,7 @@ function Faq({ learningMode }: { learningMode: boolean }) {
       {faqs.map((cat, i) => (
         <div key={i} className="mb-8">
           <h2 className="text-xl font-black text-slate-800 mb-5 pb-3 border-b border-slate-200 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#C80050]"></div> {cat.category}
+            <div className="w-2 h-2 rounded-full bg-[#f91f64]"></div> {cat.category}
           </h2>
           <div className="space-y-5">
             {cat.items.map((item, j) => (
@@ -435,6 +448,70 @@ function Faq({ learningMode }: { learningMode: boolean }) {
           </div>
         </div>
       ))}
+    </motion.div>
+  );
+}
+
+function Spicker({ learningMode }: { learningMode: boolean }) {
+  if (!learningMode) return null;
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-8"
+    >
+      <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+        <h2 className="text-2xl font-black text-[#f91f64] mb-6 tracking-tight">Culture Fit &amp; Management Summary</h2>
+        <div className="space-y-8">
+          
+          <div>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">1. Die Master-Frage: &quot;Warum wollen Sie bei mymuesli arbeiten?&quot;</h3>
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
+              &quot;Für mich ist mymuesli nicht einfach nur ein Onlineshop, sondern eine echte Pionier-Marke, die bereits seit 2007 den Markt für personalisierbare Bio-Lebensmittel prägt. Genau diese Individualität ist mein absolutes Steckenpferd: Ich habe meine Bachelorarbeit tiefgehend über individuelle Produkte im E-Commerce geschrieben. Euer Leitsatz &apos;MY WAY. MY MUESLI.&apos; bringt genau das auf den Punkt, woran ich glaube: Der Kunde möchte nicht irgendein Produkt, er möchte sein Produkt.<br/><br/>
+              Darüber hinaus identifiziere ich mich stark mit euren Markenwerten. E-Commerce ist oft sehr schnelllebig und rein konsumgetrieben. Bei mymuesli fasziniert mich, dass Wirtschaftlichkeit Hand in Hand mit Werten wie 100% Bio-Qualität, Nachhaltigkeit und dem klaren Ziel von &apos;Zero Food Waste&apos; geht. Dass ihr von Passau aus auf umweltfreundliche Verpackungen und absolut transparente, nachhaltige Produktionsstandards setzt, macht mymuesli für mich zu einer authentischen Marke. Ich möchte meine Energie im Performance Marketing und UX-Design für ein Unternehmen einsetzen, das nicht nur wachsen will, sondern auch verantwortungsvoll handelt.&quot;
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">2. Frage: &quot;Wie passen Sie in unser Team und zu unserer Marke?&quot;</h3>
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
+              &quot;Als Kommunikationsdesigner betrachte ich E-Commerce immer durch die Linse der Markenidentität. Ich sehe mymuesli als eine Marke, die extrem modern, lebendig (&apos;vibrant&apos;) und spielerisch (&apos;playful&apos;) auftritt, dabei aber immer clean und authentisch bleibt. Genau das ist mein Ansatz im Design: Ich sorge für saubere, intuitive Nutzeroberflächen, die Spaß machen und konvertieren.<br/><br/>
+              Wenn es um die Zusammenarbeit im Team geht, spiegele ich genau euren &apos;Tone of Voice&apos; wider: Ich arbeite enthusiastisch, schätze den persönlichen Austausch auf Augenhöhe und übernehme verantwortungsvoll meine Aufgaben (&apos;Responsible&apos;). Ihr sucht jemanden, der moderne E-Commerce-Standards setzt, und genau das bringe ich mit.&quot;
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold text-slate-800 mb-3">3. Frage: &quot;Was reizt Sie an unserem Produktportfolio?&quot;</h3>
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 italic text-slate-700 leading-relaxed shadow-sm">
+              &quot;Was mich am meisten reizt, ist die Balance aus höchster Qualität und enormer Komplexität. Ihr bietet über 80 hochwertige Bio-Zutaten an, aus denen sich zahllose Kombinationen für Müslis, Porridges und Snacks erstellen lassen. Aus Sicht eines On-Site Merchandisers ist das die Königsklasse: Wie präsentiere ich diese massive Auswahl an gesunden, nachhaltigen Zutaten so, dass der Kunde inspiriert und nicht überfordert wird? Diese Brücke zwischen einem komplexen, 100% biologischen Produkt im Backend und einem völlig mühelosen, personalisierten Kauferlebnis im Frontend zu schlagen, ist genau die Herausforderung, für die ich brenne.&quot;
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div className="bg-[#fff9e6] border-l-4 border-[#ffd000] p-6 rounded-r-2xl shadow-sm">
+        <h3 className="text-[#f91f64] font-black uppercase tracking-wide mb-4 flex items-center gap-2">
+          <Lightbulb size={20} />
+          Spickzettel für spontane Rückfragen
+        </h3>
+        <ul className="space-y-4">
+          <li className="flex gap-3 items-start">
+             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
+             <p className="text-sm text-slate-800"><strong className="text-slate-900">Rabatte:</strong> &quot;Wir müssen aufpassen, dass wir mit Aktionen unsere Transparenz und die Authentizität der Marke nicht verwässern. Ein Bio-Produkt hat seinen Wert.&quot;</p>
+          </li>
+          <li className="flex gap-3 items-start">
+             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
+             <p className="text-sm text-slate-800"><strong className="text-slate-900">Retouren/Abbrüche:</strong> &quot;Jeder Optimierungsschritt im Mixer zahlt direkt auf unser &apos;Zero Food Waste&apos; Ziel ein. Ein Kunde, der exakt versteht, was er mischt, schickt nichts zurück.&quot;</p>
+          </li>
+          <li className="flex gap-3 items-start">
+             <ChevronRight className="text-yellow-600 shrink-0 mt-0.5" size={18} />
+             <p className="text-sm text-slate-800"><strong className="text-slate-900">Design-Anpassungen:</strong> &quot;Das neue Feature muss sich natürlich nahtlos in unsere &apos;eco-conscious&apos; und cleane Markenästhetik einfügen.&quot;</p>
+          </li>
+        </ul>
+      </div>
+
     </motion.div>
   );
 }
