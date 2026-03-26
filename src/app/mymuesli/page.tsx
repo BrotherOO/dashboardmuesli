@@ -30,7 +30,7 @@ export default function MyMuesliPresentation() {
           <p className="px-6 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Präsentation</p>
           <nav className="space-y-1">
             {tabs.map(tab => {
-              if ((tab.id === 'spicker' || tab.id === 'qa') && !editorMode) return null;
+              if ((tab.id === 'spicker' || tab.id === 'qa' || tab.id === 'cv') && !editorMode) return null;
 
               return (
                 <button
