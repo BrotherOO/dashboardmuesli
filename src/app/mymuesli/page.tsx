@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, CheckCircle2, ArrowRight, Lightbulb, Target } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, TrendingDown, Minus, Info, CheckCircle2, ArrowRight, Lightbulb, Target, User } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -13,8 +13,9 @@ export default function MyMuesliPresentation() {
     { id: 'task1', label: 'Aufgabe 1: Dashboard', icon: <ChartBar size={20} /> },
     { id: 'task2', label: 'Aufgabe 2: Merchandising', icon: <Leaf size={20} /> },
     { id: 'task3', label: 'Aufgabe 3: Praxisaufgabe', icon: <Settings size={20} /> },
+    { id: 'cv', label: 'Lebenslauf', icon: <User size={20} /> },
     { id: 'qa', label: 'Q&A (Stress-Test)', icon: <ShieldQuestion size={20} /> },
-    { id: 'spicker', label: 'Edit', icon: <Info size={20} /> }
+    { id: 'spicker', label: 'Warum mymuesli?', icon: <Info size={20} /> }
   ];
 
   return (
@@ -111,6 +112,7 @@ export default function MyMuesliPresentation() {
               {activeTab === 'task1' && <Task1 editorMode={editorMode} setActiveTab={setActiveTab} />}
               {activeTab === 'task2' && <Task2 editorMode={editorMode} />}
               {activeTab === 'task3' && <Task3 editorMode={editorMode} />}
+              {activeTab === 'cv' && <CVProfile />}
               {activeTab === 'qa' && <Faq editorMode={editorMode} />}
               {activeTab === 'spicker' && <Spicker editorMode={editorMode} />}
             </motion.div>
@@ -122,6 +124,62 @@ export default function MyMuesliPresentation() {
 }
 
 // ------ SUBCOMPONENTS ------
+function CVProfile() {
+  const qaCards = [
+    {
+      q: "Warum möchten Sie sich beruflich verändern?",
+      a: "Nach meinem Bachelor-Abschluss im Februar 2025 habe ich bei der PIXLIP GmbH wertvolle Erfahrungen in der eigenverantwortlichen Betreuung und Optimierung eines Shopify-Webshops gesammelt. Ich habe dort die Conversion Rate und UX erfolgreich vorangetrieben. Allerdings suche ich nun nach einer langfristigen Herausforderung in einem D2C-Unternehmen, das exakt mein akademisches Steckenpferd bedient: Hochgradig personalisierbare Produkte im Food-Sektor. mymuesli bietet genau die Schnittstelle aus komplexem E-Commerce und starkem Branding, für die ich brenne."
+    },
+    {
+      q: "Was nehmen Sie aus Ihrer Zeit bei MaxViral mit?",
+      a: "Bei MaxViral habe ich gelernt, was 'Performance-Design' wirklich bedeutet. Ich war fast 5 Jahre dort und habe das Unternehmen in einer frühen Phase begleitet. Ich habe über 1.000 Werbeanzeigen für Meta und TikTok gestaltet und optimiert sowie über 100 E-Mail-Marketingkampagnen in Klaviyo umgesetzt. Mein größtes Learning: Design darf nicht nur schön sein, es muss konvertieren und messbare Ergebnisse liefern. Diese datengetriebene Arbeitsweise bringe ich direkt in das On-Site Merchandising bei mymuesli ein."
+    },
+    {
+      q: "Was ist Ihr USP (Alleinstellungsmerkmal)?",
+      a: "Mein USP ist die Brücke zwischen Kreation und Daten. Ich bin studierter Kommunikationsdesigner, der gleichzeitig tief in Shopify, Klaviyo und Web-Analytics zu Hause ist. Ich muss nicht erst einen Entwickler oder Analysten fragen, wie eine Kampagne performt – ich kann die Daten selbst auswerten, das kreative Konzept anpassen und es direkt im CMS umsetzen. Mein Ziel ist immer ein funktionales, ästhetisch klares und stimmiges Online-Erlebnis, das Marke und Produkt optimal präsentiert."
+    }
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* Header & Intro */}
+      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+        <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
+          <User className="text-[#12504c]" size={28}/> Mein Profil & Werdegang
+        </h2>
+        
+        <div className="bg-gradient-to-r from-[#12504c] to-[#1e7a74] rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex items-center gap-6">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+           <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shrink-0 shadow-inner">
+             <span className="text-2xl font-black text-white tracking-widest">DD</span>
+           </div>
+           <div className="z-10 relative">
+             <h3 className="text-2xl font-black mb-2">David Dubinskiy</h3>
+             <p className="text-white/90 font-medium text-sm md:text-base leading-relaxed">
+               B.A. Kommunikationsdesign.<br className="md:hidden"/>
+               Fokus: E-Commerce, Shopify, Digitales Marketing.
+             </p>
+           </div>
+        </div>
+      </div>
+
+      {/* Main Q&A Area */}
+      <div className="space-y-6">
+        {qaCards.map((card, idx) => (
+          <div key={idx} className="bg-white p-6 md:p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow border border-slate-200">
+            <h4 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <ShieldQuestion className="text-[#C80050]" size={20}/> {card.q}
+            </h4>
+            <p className="text-sm font-medium text-slate-600 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+              {card.a}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab: (t:string)=>void }) {
   // Helper form Neumorphism Card
   const NeoCard = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
@@ -135,17 +193,35 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
       
       {/* 1. EXTENDED KPI GRID */}
       <div className="bg-white p-7 rounded-3xl shadow-sm border border-slate-200 relative">
-        <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
-          <ChartBar className="text-[#C80050]" size={24}/> Performance Cockpit
-        </h3>
+        
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h3 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <ChartBar className="text-[#C80050]" size={24}/> Performance Cockpit
+          </h3>
+          <div className="relative">
+            <button className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-800 px-5 py-2.5 rounded-xl text-sm font-bold transition-all border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#f91f64]">
+               📅 Letzte 7 Tage <ChevronRight size={14} className="rotate-90 opacity-50"/>
+            </button>
+            <AnimatePresence>
+              {editorMode && (
+                <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="absolute top-14 right-0 w-[320px] bg-[#fff9e6] border-l-4 border-[#ffd000] p-4 rounded-xl shadow-xl z-50">
+                  <p className="text-xs text-slate-800 font-bold italic flex items-start gap-2 leading-relaxed">
+                    <Lightbulb size={16} className="shrink-0 mt-0.5 text-[#C80050]"/> 
+                    {"\"Wie Sie sehen, habe ich das Dashboard standardmäßig auf die 'Letzten 7 Tage' im Vergleich zur 'Vorwoche' eingestellt. Ein Vergleich von gestern zu heute macht durch die natürlichen Schwankungen im E-Commerce keinen Sinn. Im operativen Merchandising schaue ich mir die Wochentrends an. Wenn wir allerdings in Aufgabe 2 über den Saisonwechsel sprechen, würde ich diesen Filter auf 'Year-over-Year' (Vorjahr) stellen, um die Saisonalität sauber abzubilden.\""}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
            
            {/* Row 1 */}
            <NeoCard>
-             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Gesamtumsatz (Heute)</div>
+             <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Gesamtumsatz</div>
              <div className="text-3xl font-black text-slate-800">128.450 €</div>
-             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide">+12% vs. Vorwoche</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +12% vs. Vorwoche</div>
              {/* Wellenlinie */}
              <svg className="absolute bottom-0 left-0 w-full h-12 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
                <motion.path 
@@ -161,31 +237,36 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Sitzungen (Traffic)</div>
              <div className="text-3xl font-black text-slate-800">42.000</div>
-             <div className="text-xs text-slate-500 font-bold mt-1 tracking-wide"><span className="text-blue-500">60% Mobile</span> / <span className="text-slate-400">40% Desktop</span></div>
+             <div className="text-xs text-slate-500 font-bold mt-1 tracking-wide flex items-center gap-1"><Minus size={14}/> 0% vs. Vorwoche</div>
+             <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest"><span className="text-blue-500">60% Mobile</span> / 40% Desktop</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Conversion Rate</div>
-             <div className="text-3xl font-black text-green-600">3,2 %</div>
-             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Food D2C Benchmark</div>
+             <div className="text-3xl font-black text-slate-800">3,2 %</div>
+             <div className="text-xs text-[#C80050] font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingDown size={14}/> -0.4% vs. Vorwoche</div>
+             <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Food D2C Benchmark</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Average Order Value</div>
              <div className="text-3xl font-black text-slate-800">44,80 €</div>
-             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Ø 2-3 Dosen + Zubehör</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +5% vs. Vorwoche</div>
+             <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Ø 2-3 Dosen + Zubehör</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Retention Rate</div>
              <div className="text-3xl font-black text-slate-800">68 %</div>
-             <div className="text-xs text-[#C80050] font-bold mt-1 tracking-wide">Starkes Abo-Modell</div>
+             <div className="text-xs text-green-600 font-bold mt-1 tracking-wide flex items-center gap-1"><TrendingUp size={14}/> +2% vs. Vorwoche</div>
+             <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Starkes Abo-Modell</div>
            </NeoCard>
 
            <NeoCard>
              <div className="text-xs text-slate-500 uppercase font-black mb-1 opacity-70">Retourenquote</div>
-             <div className="text-3xl font-black text-green-600">1,5 %</div>
-             <div className="text-xs text-slate-400 font-bold mt-1 tracking-wide">Customized Food Standard</div>
+             <div className="text-3xl font-black text-slate-800">1,5 %</div>
+             <div className="text-xs text-slate-500 font-bold mt-1 tracking-wide flex items-center gap-1"><Minus size={14}/> Stabil</div>
+             <div className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">Customized Food Standard</div>
            </NeoCard>
 
            {/* OVERLAYS FOR KPIs */}
