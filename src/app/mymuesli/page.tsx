@@ -349,11 +349,11 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
           <div className="flex-1 bg-[#f8fafc] shadow-[inset_6px_6px_12px_#e2e8f0,inset_-6px_-6px_12px_#ffffff] rounded-2xl p-6 relative flex flex-col md:flex-row gap-8 items-center justify-center border border-slate-50 overflow-hidden">
               <div className="w-full max-w-md space-y-6 relative z-0 py-4">
                  {[
-                   { step: "Schritt 1: Basis", rate: "100%", drop: null, trend: "+2,4%", trendPos: true, bg: "bg-slate-800", w: "w-full" },
-                   { step: "Schritt 2: Zutaten", rate: "62%", drop: "-38%", trend: "-4,1%", trendPos: false, bg: "bg-[#C80050]", w: "w-[85%]" },
-                   { step: "Checkout", rate: "28%", drop: "-55%", trend: "+0,2%", trendPos: true, bg: "bg-[#12504c]", w: "w-[50%]" }
+                   { step: "Schritt 1: Basis", rate: "100%", drop: null, trend: "", trendPos: true, bg: "bg-slate-800", bgLight: "bg-slate-800/10", w: "w-full", wLastWeek: "w-full" },
+                   { step: "Schritt 2: Zutaten", rate: "62%", drop: "-38%", trend: "-4,1%", trendPos: false, bg: "bg-[#C80050]", bgLight: "bg-[#C80050]/30", w: "w-[85%]", wLastWeek: "w-[94%]" },
+                   { step: "Checkout", rate: "28%", drop: "-55%", trend: "+0,2%", trendPos: true, bg: "bg-[#12504c]", bgLight: "bg-[#12504c]/30", w: "w-[50%]", wLastWeek: "w-[48%]" }
                  ].map((stage, i) => (
-                    <div key={i} className="relative flex flex-col items-center group">
+                    <div key={i} className="relative flex flex-col items-center group w-full">
                        
                        {/* Drop-off Indicator between steps */}
                        {stage.drop && (
@@ -363,16 +363,21 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
                           </div>
                        )}
 
-                       {/* The Funnel Bar */}
-                       <div className={`${stage.w} ${stage.bg} text-white py-4 rounded-xl shadow-[4px_4px_10px_#cbd5e1] flex items-center justify-between px-6 relative transition-transform hover:scale-105 duration-300`}>
+                       {/* The Funnel Bar Current Week */}
+                       <div className={`${stage.w} ${stage.bg} text-white py-4 rounded-xl shadow-[4px_4px_10px_#cbd5e1] flex items-center justify-between px-6 relative transition-transform hover:scale-105 duration-300 z-10`}>
                           <span className="text-xs font-bold uppercase tracking-wider">{stage.step}</span>
                           <span className="text-xl font-black">{stage.rate}</span>
-                          
-                          {/* Graphical WoW Trend Badge (Foreground/Background floating) */}
-                          <div className={`absolute top-1/2 -translate-y-1/2 -right-4 md:-right-12 xl:-right-16 bg-white border ${stage.trendPos ? 'border-green-100 text-green-600' : 'border-red-100 text-[#C80050]'} px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 font-bold text-xs whitespace-nowrap opacity-90 group-hover:opacity-100 transition-opacity z-20`}>
-                             {stage.trendPos ? <TrendingUp size={14}/> : <TrendingDown size={14}/>} {stage.trend} <span className="text-[9px] text-slate-400 hidden xl:inline">vs. Vorwoche</span>
-                          </div>
                        </div>
+
+                       {/* The Thin Funnel Bar Last Week */}
+                       {i > 0 && (
+                          <div className={`${stage.wLastWeek} ${stage.bgLight} h-6 rounded-b-xl -mt-2 shadow-sm flex items-end justify-end px-3 pb-[1px] relative z-0`}>
+                             <span className="text-[9px] items-center gap-1 font-black text-slate-600 flex uppercase tracking-wide">
+                                {stage.trendPos ? <TrendingUp size={10}/> : <TrendingDown size={10}/>} {stage.trend} Vorwoche
+                             </span>
+                          </div>
+                       )}
+                       
                     </div>
                  ))}
               </div>
