@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, MousePointerClick, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
+import { ChartBar, Leaf, Settings, ShieldQuestion, BrainCircuit, ChevronRight, TrendingUp, Info, PlayCircle, Loader2, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
 
 export default function MyMuesliPresentation() {
   const [activeTab, setActiveTab] = useState('task1');
@@ -314,80 +314,109 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
 }
 
 function Task2({ editorMode }: { editorMode: boolean }) {
-  const [season, setSeason] = useState<'summer'|'autumn'>('summer');
-  const [activeCard, setActiveCard] = useState<number|null>(null);
+  const [showHero, setShowHero] = useState(false);
 
-  const points = [
+  const pillars = [
     {
-      title: 'Porridge Fokus',
-      standard: 'Warme Müslis rücken in die Hero-Section.',
-      learning: '"Herbst ist \'Comfort Food\'-Zeit. Wenn es draußen ungemütlich wird, konvertieren warme Breakfast-Bowls am besten."'
+      title: 'Fokus-Produkte',
+      subtitle: 'Produktauswahl & Platzierung',
+      text: 'Priorisierung von warmen Optionen (Porridge), Herbst-Gewürzen (Apfel-Zimt) und frühzeitiger Pre-Sale der Adventskalender. Platzierung: Prominent "Above the Fold".',
+      pitch: 'Strategie: Herbst ist \'Comfort Food\'-Zeit. Adventskalender müssen früh geteasert werden, um Cashflow zu sichern, bevor die Konkurrenz startet.'
     },
     {
-      title: 'Adventskalender',
-      standard: 'Frühzeitige Teaser & Pre-Sales implementieren.',
-      learning: '"Adventskalender sind massive Umsatztreiber im Q4. Wir müssen diese früh anteasern, um Vorbestellungen und Cashflow zu generieren, bevor die Konkurrenz im November startet."'
+      title: 'Value-Add statt Rabatt',
+      subtitle: 'Promotionen & Rabatte',
+      text: 'Einführung von "Herbst-Probierpaketen" und eine Aktion: "Gratis Porridge-Becher ab 50€ Mindestbestellwert".',
+      pitch: 'Warum keine 20%? Rabatte zerstören die Premium-Markenwahrnehmung und die Marge. Ein Gratis-Becher steigert den Average Order Value (AOV) und dient als täglicher Anker in der Küche des Kunden.'
     },
     {
-      title: 'Gratis Porridge-Becher',
-      standard: 'Add-on ab Mindestbestellwert (statt -20% Rabatt).',
-      learning: '"Warum Gratis-Produkte statt Rabatte? Rabatte zerstören die Premium-Markenwahrnehmung und killen unsere Marge. Ein Gratis-Becher als \'Add-on\' steigert den Average Order Value (AOV), ohne das Müsli abzuwerten."'
+      title: 'Atmosphärische UX',
+      subtitle: 'Layout & User Experience',
+      text: 'Anpassung der Farbwelt auf warme Erdtöne (Kupfer, Mymuesli-Beere). Bildsprache auf "Cozy Indoor" wechseln. Neue Kategorie "Herbst-Genuss" in der Main-Nav.',
+      pitch: 'Farbpsychologie nutzen: Ein warmer visueller Übergang signalisiert dem Unterbewusstsein den Bedarf nach Comfort Food. Das senkt die Bounce-Rate.'
     }
   ];
 
   return (
-    <div className={`p-8 rounded-2xl shadow-sm border transition-colors duration-700 ${season === 'summer' ? 'bg-[#ffedc2] border-[#ffd000]/30' : 'bg-[#f4b8c8]/20 border-[#f91f64]/20'}`}>
-       <div className="flex justify-between items-center mb-8">
-         <h3 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-            <Leaf className={season === 'summer' ? "text-yellow-600" : "text-[#f91f64]"} size={28}/> Saison-Strategie
+    <div className="space-y-8">
+      {/* 1. Header & Grid */}
+      <div className="bg-white p-7 rounded-3xl shadow-sm border border-slate-200">
+         <h3 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-3">
+            <Leaf className="text-[#C80050]" size={28}/> Strategie Saisonwechsel: Sommer ➔ Herbst
          </h3>
          
-         {/* Slider Toggle */}
-         <div className="flex items-center gap-3 bg-white p-1.5 rounded-full shadow-sm">
-            <button onClick={() => setSeason('summer')} className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${season==='summer'?'bg-yellow-400 text-yellow-900 shadow-sm':'text-slate-400 hover:bg-slate-50'}`}>Sommer</button>
-            <button onClick={() => setSeason('autumn')} className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${season==='autumn'?'bg-[#f91f64] text-white shadow-sm':'text-slate-400 hover:bg-slate-50'}`}>Herbst / Q4</button>
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           {pillars.map((pillar, idx) => (
+             <div key={idx} className="bg-slate-50 border border-slate-100 p-6 rounded-2xl flex flex-col h-full relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-[10px] font-black tracking-widest text-[#C80050] uppercase mb-2">{pillar.subtitle}</div>
+                <h4 className="text-lg font-bold text-slate-800 mb-3">{pillar.title}</h4>
+                <p className="text-sm text-slate-600 font-medium leading-relaxed flex-1">
+                  {pillar.text}
+                </p>
+                
+                <AnimatePresence>
+                  {editorMode && (
+                    <motion.div initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:10}} className="mt-5 bg-[#fff9e6] border-l-4 border-[#ffd000] p-4 rounded-r-xl">
+                      <p className="text-xs text-slate-800 font-bold italic flex items-start gap-2">
+                        <Lightbulb size={14} className="shrink-0 mt-0.5 text-[#C80050]"/> 
+                        {pillar.pitch}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+             </div>
+           ))}
          </div>
-       </div>
+      </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         {points.map((pt, idx) => (
-            <button key={idx} onClick={() => setActiveCard(activeCard === idx ? null : idx)} className="bg-white p-7 rounded-2xl shadow-sm border border-white hover:border-[#f91f64]/30 transition-all flex flex-col h-full text-left focus:outline-none">
-               <h4 className="text-lg font-bold text-slate-800 mb-3 flex justify-between items-center">
-                  {pt.title}
-                  <MousePointerClick size={16} className="text-slate-300"/>
-               </h4>
-               <p className="text-slate-600 text-sm font-medium leading-relaxed mb-4">
-                 {pt.standard}
-               </p>
-               
-               <AnimatePresence>
-                 {(editorMode || activeCard === idx) && (
-                   <motion.div 
-                     initial={{ opacity: 0, height: 0 }}
-                     animate={{ opacity: 1, height: 'auto' }}
-                     exit={{ opacity: 0, height: 0 }}
-                     className="overflow-hidden mt-auto pt-4 border-t border-slate-100"
-                   >
-                     <div className="bg-[#fff9e6] border-l-4 border-[#f91f64] p-4 rounded-r-xl">
-                       <p className="text-xs text-slate-800 font-bold italic">
-                         {pt.learning}
-                       </p>
-                     </div>
-                   </motion.div>
-                 )}
-               </AnimatePresence>
-            </button>
-         ))}
-       </div>
+      {/* 2. Interactive Hero Mockup Button */}
+      <div className="flex justify-center">
+         <button 
+           onClick={() => setShowHero(!showHero)}
+           className="bg-[#12504c] hover:bg-[#0d3b38] text-white px-8 py-4 rounded-full font-black shadow-lg hover:shadow-xl transition-all flex items-center gap-3"
+         >
+           👁️ Beispiel Hero-Section {showHero ? 'einklappen' : 'aufklappen'}
+         </button>
+      </div>
 
-       <AnimatePresence>
-         {editorMode && (
-           <motion.div initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="mt-8 bg-white/80 p-5 rounded-xl border border-white shadow-sm font-bold text-sm text-[#12504c] flex gap-3 items-center">
-              <Info size={20} className="shrink-0"/>
-              &quot;Visuelle Identität anpassen: Durch meinen Background im Kommunikationsdesign weiß ich, dass Farbpsychologie die Kaufbereitschaft stark beeinflusst. Ein warmer Übergang signalisiert dem Unterbewusstsein den Bedarf nach Comfort Food.&quot;
+      {/* 3. The Hero Mockup Banner */}
+      <AnimatePresence>
+         {showHero && (
+           <motion.div 
+             initial={{ opacity: 0, height: 0, scale: 0.95 }} 
+             animate={{ opacity: 1, height: 'auto', scale: 1 }} 
+             exit={{ opacity: 0, height: 0, scale: 0.95 }}
+             className="overflow-hidden"
+           >
+             <div className="bg-gradient-to-r from-[#C80050] to-[#e65c00] rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[300px]">
+                
+                {/* Decorative background elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                <div className="absolute bottom-0 left-1/4 w-40 h-40 bg-black opacity-10 rounded-full blur-2xl translate-y-1/2"></div>
+                
+                {/* Left Side: Copy & CTA */}
+                <div className="w-full md:w-[60%] z-10 text-white space-y-6">
+                   <h1 className="text-4xl md:text-5xl font-black leading-tight">Dein gemütlicher Start in den Herbst.</h1>
+                   <p className="text-lg md:text-xl font-medium text-white/90">
+                     Entdecke unsere neuen warmen Porridges und sichere dir deinen Adventskalender.
+                   </p>
+                   <button className="bg-white text-[#C80050] px-8 py-4 rounded-xl font-black hover:bg-slate-50 transition-colors shadow-lg mt-4 inline-block">
+                     Herbst-Genuss entdecken
+                   </button>
+                </div>
+
+                {/* Right Side: Visual Placeholder */}
+                <div className="w-full md:w-[35%] mt-8 md:mt-0 z-10 flex justify-center">
+                   <div className="w-48 h-48 md:w-64 md:h-64 bg-white/20 backdrop-blur-md border-2 border-white/40 rounded-full flex flex-col items-center justify-center shadow-xl rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+                      <Leaf size={48} className="text-white opacity-80 mb-2"/>
+                      <span className="text-white/80 font-bold text-sm uppercase tracking-widest">[Müsli-Bowl]</span>
+                   </div>
+                </div>
+
+             </div>
            </motion.div>
          )}
-       </AnimatePresence>
+      </AnimatePresence>
     </div>
   );
 }
