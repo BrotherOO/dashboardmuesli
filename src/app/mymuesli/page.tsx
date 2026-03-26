@@ -333,7 +333,7 @@ function Task1({ editorMode, setActiveTab }: { editorMode: boolean, setActiveTab
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-black">3</div>
                   <div>
-                    <div className="text-sm font-bold text-slate-800">Adventskalender</div>
+                    <div className="text-sm font-bold text-slate-800">Oster-Müsli</div>
                     <div className="text-[10px] font-black tracking-wider text-slate-400 uppercase">Saison-Treiber</div>
                   </div>
                 </div>
